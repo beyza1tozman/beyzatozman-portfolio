@@ -1,0 +1,5 @@
+node_modules
+dist
+.netlify
+# other artists' work, kept local only
+design-references/
