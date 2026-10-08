@@ -6,8 +6,10 @@ const viewFromHash = () => {
   return VIEWS.includes(hash) ? hash : 'home'
 }
 
-// How far visitors can turn (radians) and zoom (distance factor) on the overview.
-export const ORBIT_LIMITS = { yawMin: -0.55, yawMax: 0.65, zoomMin: 0.5, zoomMax: 1.3 }
+// Visitors can turn all the way around the cafe. Pitch (radians, added to the
+// starting tilt) keeps the camera above the floor; zoom is a distance factor.
+export const ORBIT_LIMITS = { pitchMin: -0.75, pitchMax: 0.3, zoomMin: 0.5, zoomMax: 1.3 }
+const TAU = Math.PI * 2
 const clamp = (v, min, max) => Math.min(max, Math.max(min, v))
 
 export const useStore = create((set) => ({
@@ -16,7 +18,9 @@ export const useStore = create((set) => ({
   hoveredId: null,
   openProjectId: null,
   sceneReady: false,
-  orbit: { yaw: 0, zoom: 1 },
+  orbit: { yaw: 0, pitch: 0, zoom: 1 },
+  // bumped on reset so any leftover drag momentum stops
+  orbitResets: 0,
   // true when the current pointer gesture was a drag, so it shouldn't count as a click
   dragMoved: false,
   setView: (view) => {
@@ -27,11 +31,22 @@ export const useStore = create((set) => ({
   openProject: (openProjectId) => set({ openProjectId }),
   closeProject: () => set({ openProjectId: null }),
   setSceneReady: () => set({ sceneReady: true }),
-  turn: (dYaw) =>
-    set(({ orbit }) => ({ orbit: { ...orbit, yaw: clamp(orbit.yaw + dYaw, ORBIT_LIMITS.yawMin, ORBIT_LIMITS.yawMax) } })),
+  turn: (dYaw, dPitch = 0) =>
+    set(({ orbit }) => ({
+      orbit: {
+        ...orbit,
+        yaw: orbit.yaw + dYaw,
+        pitch: clamp(orbit.pitch + dPitch, ORBIT_LIMITS.pitchMin, ORBIT_LIMITS.pitchMax),
+      },
+    })),
   zoomBy: (factor) =>
     set(({ orbit }) => ({ orbit: { ...orbit, zoom: clamp(orbit.zoom * factor, ORBIT_LIMITS.zoomMin, ORBIT_LIMITS.zoomMax) } })),
-  resetOrbit: () => set({ orbit: { yaw: 0, zoom: 1 } }),
+  // back to the start angle the short way round, not by unwinding every full turn
+  resetOrbit: () =>
+    set(({ orbit, orbitResets }) => ({
+      orbit: { yaw: Math.round(orbit.yaw / TAU) * TAU, pitch: 0, zoom: 1 },
+      orbitResets: orbitResets + 1,
+    })),
   setDragMoved: (dragMoved) => set({ dragMoved }),
 }))
 

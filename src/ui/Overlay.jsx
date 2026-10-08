@@ -16,8 +16,8 @@ export default function Overlay() {
   const setView = useStore((s) => s.setView)
   const modalOpen = useStore((s) => !!s.openProjectId)
   const orbit = useStore((s) => s.orbit)
-  const moved = orbit.yaw !== 0 || orbit.zoom !== 1
-  const { turn, zoomBy, resetOrbit } = useStore.getState()
+  // any turn that isn't a whole number of full circles counts as moved
+  const moved = Math.abs(Math.sin(orbit.yaw / 2)) > 0.01 || orbit.pitch !== 0 || orbit.zoom !== 1
 
   useEffect(() => {
     const onKey = (e) => {
@@ -67,18 +67,10 @@ export default function Overlay() {
         </button>
       )}
 
-      {hasWebGL && view === 'home' && (
-        <div className="view-controls" role="group" aria-label="Look around">
-          <button className="chunky ghost" onClick={() => turn(-0.3)} aria-label="Turn left">←</button>
-          <button className="chunky ghost" onClick={() => zoomBy(0.8)} aria-label="Zoom in">+</button>
-          <button className="chunky ghost" onClick={() => zoomBy(1.25)} aria-label="Zoom out">−</button>
-          <button className="chunky ghost" onClick={() => turn(0.3)} aria-label="Turn right">→</button>
-          {moved && (
-            <button className="chunky start-btn" onClick={resetOrbit}>
-              Back to start
-            </button>
-          )}
-        </div>
+      {hasWebGL && view === 'home' && moved && (
+        <button className="chunky start-btn" onClick={() => useStore.getState().resetOrbit()}>
+          Back to start
+        </button>
       )}
 
       {hasWebGL && HINTS[view] && !modalOpen && (

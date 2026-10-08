@@ -1,6 +1,6 @@
-import { useMemo } from 'react'
+import { useMemo, useRef } from 'react'
+import * as THREE from 'three'
 import { useFrame } from '@react-three/fiber'
-import { useRef } from 'react'
 import { Box, Cyl, Sphere, C } from './parts'
 import { floorTexture } from '../lib/canvasTextures'
 
@@ -28,23 +28,53 @@ function Floor() {
   )
 }
 
-function Walls() {
+// Hides its contents while the camera is on the outside of a wall, so the
+// room stays open like a dollhouse from every side.
+function HideFromOutside({ point, normal, children }) {
+  const ref = useRef()
+  const p = useMemo(() => new THREE.Vector3(...point), [point])
+  const n = useMemo(() => new THREE.Vector3(...normal), [normal])
+  const toCamera = useMemo(() => new THREE.Vector3(), [])
+  useFrame(({ camera }) => {
+    if (ref.current) ref.current.visible = toCamera.subVectors(camera.position, p).dot(n) > 0
+  })
+  return <group ref={ref}>{children}</group>
+}
+
+function BackWall() {
   return (
-    <group>
-      {/* back wall */}
+    <HideFromOutside point={[0, 0, -4.2]} normal={[0, 0, 1]}>
       <Box size={[10.4, 4, 0.2]} position={[-0.2, 2, -4.1]} color={C.wallCream} />
       <Box size={[10.4, 1.3, 0.26]} position={[-0.2, 0.65, -4.08]} color={C.wallRose} />
       <Box size={[10.4, 0.1, 0.32]} position={[-0.2, 1.33, -4.06]} color={C.trim} />
       <Box size={[10.4, 0.18, 0.34]} position={[-0.2, 4.0, -4.06]} color={C.trim} />
-      {/* left wall */}
+      <Box size={[0.3, 4.2, 0.3]} position={[5.0, 2.1, -4.1]} color={C.trim} />
+      <Window position={[-2.2, 2.45, -3.98]} />
+      <Clock position={[0.1, 3.0, -3.95]} />
+    </HideFromOutside>
+  )
+}
+
+function LeftWall() {
+  return (
+    <HideFromOutside point={[-5.2, 0, 0]} normal={[1, 0, 0]}>
       <Box size={[0.2, 4, 8.2]} position={[-5.1, 2, 0]} color={C.wallCream} />
       <Box size={[0.26, 1.3, 8.2]} position={[-5.08, 0.65, 0]} color={C.wallRose} />
       <Box size={[0.32, 0.1, 8.2]} position={[-5.06, 1.33, 0]} color={C.trim} />
       <Box size={[0.34, 0.18, 8.2]} position={[-5.06, 4.0, 0]} color={C.trim} />
-      {/* wall end caps, like the cut-away render */}
       <Box size={[0.3, 4.2, 0.3]} position={[-5.1, 2.1, 4.1]} color={C.trim} />
-      <Box size={[0.3, 4.2, 0.3]} position={[5.0, 2.1, -4.1]} color={C.trim} />
-    </group>
+      <Poster position={[-4.95, 2.5, -1.6]} rotation={[0, Math.PI / 2, 0]} />
+    </HideFromOutside>
+  )
+}
+
+// Dark floor the cafe stands on; the fog fades it out into the background.
+function Ground() {
+  return (
+    <mesh rotation-x={-Math.PI / 2} position={[0, -0.41, 1]} receiveShadow>
+      <circleGeometry args={[60, 64]} />
+      <meshStandardMaterial color="#2b231f" roughness={1} />
+    </mesh>
   )
 }
 
@@ -113,11 +143,10 @@ function Poster({ position, rotation }) {
 export default function Cafe() {
   return (
     <group>
+      <Ground />
       <Floor />
-      <Walls />
-      <Window position={[-2.2, 2.45, -3.98]} />
-      <Clock position={[0.1, 3.0, -3.95]} />
-      <Poster position={[-4.95, 2.5, -1.6]} rotation={[0, Math.PI / 2, 0]} />
+      <BackWall />
+      <LeftWall />
       <PendantLamp position={[-1.6, 2.7, -1.0]} />
       <PendantLamp position={[1.9, 2.7, 1.4]} />
     </group>
