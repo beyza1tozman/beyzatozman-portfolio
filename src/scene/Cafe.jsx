@@ -16,8 +16,8 @@ function Floor() {
   return (
     <group>
       {/* base slab */}
-      <Box size={[10.4, 0.4, 8.4]} position={[-0.2, -0.2, -0.2]} color={C.base} />
-      <mesh rotation-x={-Math.PI / 2} position={[0, 0.001, 0]} receiveShadow>
+      <Box size={[10.4, 0.39, 8.4]} position={[-0.2, -0.205, -0.2]} color={C.base} />
+      <mesh rotation-x={-Math.PI / 2} position={[0, 0, 0]} receiveShadow>
         <planeGeometry args={[10, 8]} />
         <meshStandardMaterial map={tex} roughness={0.9} />
       </mesh>
@@ -45,9 +45,9 @@ function BackWall() {
   return (
     <HideFromOutside point={[0, 0, -4.2]} normal={[0, 0, 1]}>
       <Box size={[10.4, 4, 0.2]} position={[-0.2, 2, -4.1]} color={C.wallCream} />
-      <Box size={[10.4, 1.3, 0.26]} position={[-0.2, 0.65, -4.08]} color={C.wallRose} />
-      <Box size={[10.4, 0.1, 0.32]} position={[-0.2, 1.33, -4.06]} color={C.trim} />
-      <Box size={[10.4, 0.18, 0.34]} position={[-0.2, 4.0, -4.06]} color={C.trim} />
+      <Box size={[10.44, 1.3, 0.26]} position={[-0.2, 0.65, -4.08]} color={C.wallRose} />
+      <Box size={[10.48, 0.1, 0.32]} position={[-0.2, 1.33, -4.06]} color={C.trim} />
+      <Box size={[10.52, 0.18, 0.34]} position={[-0.2, 4.0, -4.06]} color={C.trim} />
       <Box size={[0.3, 4.2, 0.3]} position={[5.0, 2.1, -4.1]} color={C.trim} />
       <Window position={[-2.2, 2.45, -3.98]} />
       <Clock position={[0.1, 3.0, -3.95]} />
@@ -59,9 +59,9 @@ function LeftWall() {
   return (
     <HideFromOutside point={[-5.2, 0, 0]} normal={[1, 0, 0]}>
       <Box size={[0.2, 4, 8.2]} position={[-5.1, 2, 0]} color={C.wallCream} />
-      <Box size={[0.26, 1.3, 8.2]} position={[-5.08, 0.65, 0]} color={C.wallRose} />
-      <Box size={[0.32, 0.1, 8.2]} position={[-5.06, 1.33, 0]} color={C.trim} />
-      <Box size={[0.34, 0.18, 8.2]} position={[-5.06, 4.0, 0]} color={C.trim} />
+      <Box size={[0.26, 1.3, 8.16]} position={[-5.08, 0.65, 0]} color={C.wallRose} />
+      <Box size={[0.32, 0.1, 8.12]} position={[-5.06, 1.33, 0]} color={C.trim} />
+      <Box size={[0.34, 0.18, 8.08]} position={[-5.06, 4.0, 0]} color={C.trim} />
       <Box size={[0.3, 4.2, 0.3]} position={[-5.1, 2.1, 4.1]} color={C.trim} />
       <Poster position={[-4.95, 2.5, -1.6]} rotation={[0, Math.PI / 2, 0]} />
     </HideFromOutside>

@@ -15,7 +15,7 @@ export default function Loader() {
   return (
     <AnimatePresence>
       {!ready && (
-        <motion.div className="loader" role="status" exit={{ opacity: 0 }} transition={{ duration: 0.6 }}>
+        <motion.div className="loader" role="status" exit={{ opacity: 0, pointerEvents: 'none' }} transition={{ duration: 0.6 }}>
           <svg viewBox="0 0 120 110" width="120" aria-hidden="true">
             <defs>
               <clipPath id="cup">

@@ -13,7 +13,7 @@ export default function Scene() {
     <Canvas
       shadows
       dpr={[1, 2.5]}
-      camera={{ fov: 32, position: [10.5, 8.2, 13.5], near: 0.1, far: 100 }}
+      camera={{ fov: 32, position: [10.5, 8.2, 13.5], near: 0.5, far: 80 }}
       onPointerMissed={() => useStore.getState().setHovered(null)}
       onCreated={() => document.fonts.ready.then(() => requestAnimationFrame(() => useStore.getState().setSceneReady()))}
     >
@@ -29,6 +29,7 @@ export default function Scene() {
         castShadow
         shadow-mapSize={[1024, 1024]}
         shadow-bias={-0.0004}
+        shadow-normalBias={0.04}
         shadow-camera-left={-9}
         shadow-camera-right={9}
         shadow-camera-top={9}

@@ -67,7 +67,7 @@ export default function Counter() {
       {/* bar counter */}
       <group position={[2.8, 0, -1.9]}>
         <Box size={[3.6, 1.0, 0.6]} position={[0, 0.5, 0]} color={C.wallRose} />
-        <Box size={[3.6, 0.1, 0.62]} position={[0, 0.55, 0.32]} color={C.trim} />
+        <Box size={[3.64, 0.1, 0.62]} position={[0, 0.55, 0.32]} color={C.trim} />
         <Box size={[3.9, 0.08, 0.9]} radius={0.03} position={[0, 1.04, 0.05]} color={C.woodLight} />
         <Siphon position={[-1.2, 1.08, -0.05]} />
         <Siphon position={[-0.75, 1.08, -0.05]} />
