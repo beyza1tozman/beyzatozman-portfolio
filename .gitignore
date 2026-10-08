@@ -3,3 +3,6 @@ dist
 .netlify
 # other artists' work, kept local only
 design-references/
+
+# local bug screenshots
+debug-screenshots/
