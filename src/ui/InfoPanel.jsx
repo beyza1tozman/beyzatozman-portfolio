@@ -2,22 +2,40 @@ import { useEffect } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useStore } from '../store'
 
-// TODO(beyza): replace with your own words, email and LinkedIn.
+export const CONTACT = {
+  email: 'tozmanbeyza@gmail.com',
+  linkedin: 'https://www.linkedin.com/in/beyzatozman1/',
+  github: 'https://github.com/beyza1tozman',
+  blog: 'https://beyzatozman.netlify.app',
+  cv: '/Beyza_Tozman_CV.pdf',
+}
+
 function About() {
   return (
     <>
       <h2 id="panel-title">About me</h2>
       <p className="dish">the house blend</p>
       <p>
-        Hi, I’m Beyza — a Computer Science Master’s student at Universität Passau in Germany who loves the place where code meets
-        storytelling. I build interactive data visualizations, small games and web experiences, and I like
-        them to feel as warm and handmade as a corner coffee shop.
+        Hi, I’m Beyza, a software and AI engineer doing my M.Sc. in Computer Science at the University of Passau.
+        I build end-to-end things where machine learning, computer vision and data visualization meet, from
+        full-stack apps to interactive dashboards.
       </p>
+      <p>
+        I’m happiest where technology meets creative expression: creative coding with p5.js, generative
+        systems, and visualizations you want to play with. Away from the keyboard you’ll find me drawing,
+        doing embroidery, taking photos or writing on my blog.
+      </p>
+      <p>I’m currently looking for a Werkstudent position in AI and software engineering.</p>
       <h3>Usually brewing with</h3>
       <div className="chips">
-        {['JavaScript', 'D3.js', 'React', 'Three.js', 'Python', 'FastAPI', 'Java', 'Astro'].map((t) => (
+        {['Python', 'PyTorch', 'JavaScript', 'D3.js', 'React', 'FastAPI', 'Spring Boot', 'ASP.NET', 'Docker', 'PostgreSQL'].map((t) => (
           <span key={t}>{t}</span>
         ))}
+      </div>
+      <div className="link-row">
+        <a className="chunky" href={CONTACT.cv} target="_blank" rel="noopener noreferrer">
+          Résumé
+        </a>
       </div>
     </>
   )
@@ -28,13 +46,24 @@ function Contact() {
     <>
       <h2 id="panel-title">Contact</h2>
       <p className="dish">leave a note on the counter</p>
-      <p>Want to talk about a project, a role, or a good book? I’d love to hear from you.</p>
-      <div className="actions" style={{ justifyContent: 'flex-start' }}>
-        <a className="chunky" href="https://github.com/beyza1tozman" target="_blank" rel="noopener noreferrer">
+      <p>Want to talk about a project, a Werkstudent role, or a good book? I’d love to hear from you.</p>
+      <p>
+        <a className="contact-email" href={`mailto:${CONTACT.email}`}>
+          {CONTACT.email}
+        </a>
+      </p>
+      <div className="link-row">
+        <a className="chunky" href={`mailto:${CONTACT.email}`}>
+          Email
+        </a>
+        <a className="chunky" href={CONTACT.linkedin} target="_blank" rel="noopener noreferrer">
+          LinkedIn
+        </a>
+        <a className="chunky" href={CONTACT.github} target="_blank" rel="noopener noreferrer">
           GitHub
         </a>
-        <a className="chunky" href="https://beyzatozman.netlify.app" target="_blank" rel="noopener noreferrer">
-          Blog
+        <a className="chunky ghost" href={CONTACT.cv} target="_blank" rel="noopener noreferrer">
+          Résumé
         </a>
       </div>
     </>

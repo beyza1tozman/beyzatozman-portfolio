@@ -158,6 +158,18 @@ button { font: inherit; cursor: pointer; }
 }
 .dish-list h1 { font-family: var(--font-chalk); font-weight: 400; font-size: 40px; text-align: center; margin: 0 0 8px; }
 
+/* ---------- contact ---------- */
+.link-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 18px; }
+.contact-email {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  font-size: 20px;
+  color: var(--ink);
+  text-decoration-color: var(--rose);
+  text-underline-offset: 4px;
+  word-break: break-all;
+}
+
 /* ---------- modal ---------- */
 .backdrop {
   position: fixed;
