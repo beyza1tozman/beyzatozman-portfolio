@@ -5,7 +5,7 @@ function Plant({ position, scale = 1 }) {
   return (
     <group position={position} scale={scale}>
       <Cyl args={[0.24, 0.18, 0.42, 16]} position={[0, 0.21, 0]} color={C.pot} />
-      <Cyl args={[0.22, 0.22, 0.02, 16]} position={[0, 0.41, 0]} color="#4a2e1c" />
+      <Cyl args={[0.21, 0.21, 0.02, 16]} position={[0, 0.425, 0]} color="#4a2e1c" />
       {leaves.map((i) => {
         const a = (i / leaves.length) * Math.PI * 2
         return (

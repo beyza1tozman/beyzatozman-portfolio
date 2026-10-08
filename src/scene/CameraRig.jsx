@@ -21,7 +21,7 @@ VIEWS.contact = VIEWS.home
 
 export default function CameraRig() {
   const view = useStore((s) => s.view)
-  const { camera, size, pointer } = useThree()
+  const { camera, size } = useThree()
   const target = useRef(new THREE.Vector3(...VIEWS.home.target))
   const goalPos = useRef(new THREE.Vector3())
   const goalTarget = useRef(new THREE.Vector3())
@@ -31,11 +31,6 @@ export default function CameraRig() {
     const v = size.width / size.height < 0.9 ? base.portrait : base
     goalPos.current.set(...v.pos)
     goalTarget.current.set(...v.target)
-    // gentle parallax with the mouse, only on the overview
-    if (view !== 'projects' && !prefersReducedMotion) {
-      goalPos.current.x += pointer.x * 0.6
-      goalPos.current.y += pointer.y * 0.3
-    }
     const k = prefersReducedMotion ? 1 : 1 - Math.exp(-dt * 2.2)
     camera.position.lerp(goalPos.current, k)
     target.current.lerp(goalTarget.current, k)

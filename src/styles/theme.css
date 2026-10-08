@@ -56,15 +56,6 @@ button { font: inherit; cursor: pointer; }
   border: 0;
   padding: 0;
 }
-.brand small {
-  display: block;
-  font-family: var(--font-sans);
-  font-weight: 500;
-  font-size: 11px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--rose);
-}
 
 .topnav { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
 .topnav button, .topnav a {

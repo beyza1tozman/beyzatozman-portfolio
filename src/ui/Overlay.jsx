@@ -6,8 +6,8 @@ import { projects } from '../data/projects'
 const isTouch = typeof window !== 'undefined' && window.matchMedia('(hover: none)').matches
 
 const HINTS = {
-  home: isTouch ? 'tap the menu board ✦' : 'pick something from the menu board ✦',
-  projects: isTouch ? 'tap a dish to flip it ✦ tap again to order' : 'hover a dish to flip it ✦ click to order',
+  home: isTouch ? 'tap the menu board' : 'pick something from the menu board',
+  projects: isTouch ? 'tap a dish to flip it, tap again to order' : 'hover a dish to flip it, click to order',
 }
 
 // HTML layer over the canvas: brand, accessible nav, back button, hints.
@@ -29,7 +29,6 @@ export default function Overlay() {
       <header className="topbar">
         <button className="brand" onClick={() => setView('home')}>
           Beyza Tozman
-          <small>Kissaten portfolio</small>
         </button>
         <nav className="topnav" aria-label="Main">
           {MENU_ITEMS.map((item) =>

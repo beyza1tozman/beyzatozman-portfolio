@@ -182,7 +182,7 @@ export function projectCardTexture(project) {
     ctx.fillStyle = '#241c17'
     ctx.font = '30px "Gochi Hand"'
     ctx.textAlign = 'center'
-    ctx.fillText('✦ click to order ✦', w / 2, h - 50)
+    ctx.fillText('click to order', w / 2, h - 50)
   })
 }
 
