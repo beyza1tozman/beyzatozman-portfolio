@@ -7,7 +7,6 @@ export const CONTACT = {
   linkedin: 'https://www.linkedin.com/in/beyzatozman1/',
   github: 'https://github.com/beyza1tozman',
   blog: 'https://beyzatozman.netlify.app',
-  cv: '/Beyza_Tozman_CV.pdf',
 }
 
 function About() {
@@ -31,11 +30,6 @@ function About() {
         {['Python', 'PyTorch', 'JavaScript', 'D3.js', 'React', 'FastAPI', 'Spring Boot', 'ASP.NET', 'Docker', 'PostgreSQL'].map((t) => (
           <span key={t}>{t}</span>
         ))}
-      </div>
-      <div className="link-row">
-        <a className="chunky" href={CONTACT.cv} target="_blank" rel="noopener noreferrer">
-          Résumé
-        </a>
       </div>
     </>
   )
@@ -61,9 +55,6 @@ function Contact() {
         </a>
         <a className="chunky" href={CONTACT.github} target="_blank" rel="noopener noreferrer">
           GitHub
-        </a>
-        <a className="chunky ghost" href={CONTACT.cv} target="_blank" rel="noopener noreferrer">
-          Résumé
         </a>
       </div>
     </>

@@ -11,11 +11,10 @@ const FACE_W = 1.32
 const FACE_H = (FACE_W * TEX_H) / TEX_W
 
 export const MENU_ITEMS = [
-  { id: 'projects', label: 'Projects', price: '4 dishes', y: 318 },
-  { id: 'about', label: 'About Me', price: 'a cup', y: 388 },
-  { id: 'contact', label: 'Contact', price: 'say hi', y: 458 },
-  { id: 'resume', label: 'Résumé', price: 'to go ↗', y: 528, href: '/Beyza_Tozman_CV.pdf' },
-  { id: 'blog', label: 'Blog', price: 'fresh ↗', y: 598, href: 'https://beyzatozman.netlify.app' },
+  { id: 'projects', label: 'Projects', price: '4 dishes', y: 330 },
+  { id: 'about', label: 'About Me', price: 'a cup', y: 410 },
+  { id: 'contact', label: 'Contact', price: 'say hi', y: 490 },
+  { id: 'blog', label: 'Blog', price: 'fresh ↗', y: 570, href: 'https://beyzatozman.netlify.app' },
 ]
 
 export function chooseMenuItem(item) {
