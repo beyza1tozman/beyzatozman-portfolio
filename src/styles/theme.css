@@ -96,6 +96,29 @@ button { font: inherit; cursor: pointer; }
   z-index: 10;
 }
 
+/* ---------- look-around controls ---------- */
+.view-controls {
+  position: fixed;
+  right: 24px;
+  bottom: 22px;
+  z-index: 10;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.view-controls .chunky {
+  min-width: 44px;
+  height: 44px;
+  padding: 0 12px;
+  font-size: 20px;
+  line-height: 1;
+}
+.view-controls .start-btn {
+  order: -1;
+  font-size: 15px;
+  margin-right: 6px;
+}
+
 /* ---------- chunky buttons (Driftberry style) ---------- */
 .chunky {
   background: var(--pink-btn);
@@ -264,6 +287,9 @@ button { font: inherit; cursor: pointer; }
   .actions .chunky { flex: 1; text-align: center; white-space: nowrap; font-size: 15px; padding: 8px 10px; }
   .back-btn { left: 16px; bottom: 16px; }
   .hint { bottom: 76px; font-size: 18px; width: 100%; }
+  .view-controls { right: 16px; left: 16px; bottom: 16px; justify-content: center; }
+  .view-controls .start-btn { position: absolute; bottom: 104px; left: 50%; transform: translateX(-50%); margin: 0; }
+  .view-controls .start-btn:hover { transform: translateX(calc(-50% - 2px)) translateY(-2px); }
 }
 
 @media (prefers-reduced-motion: reduce) {

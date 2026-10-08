@@ -40,7 +40,10 @@ function Hotspot({ item }) {
         ref={glow}
         onPointerOver={(e) => (e.stopPropagation(), setHovered(true))}
         onPointerOut={() => setHovered(false)}
-        onClick={(e) => (e.stopPropagation(), chooseMenuItem(item))}
+        onClick={(e) => {
+          e.stopPropagation()
+          if (!useStore.getState().dragMoved) chooseMenuItem(item)
+        }}
       >
         <planeGeometry args={[FACE_W - 0.1, 0.16]} />
         <meshBasicMaterial color="#ffffff" transparent opacity={0} depthWrite={false} />

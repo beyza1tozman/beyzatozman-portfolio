@@ -10,22 +10,26 @@ const FONTS_READY =
       ]).catch(() => {})
     : Promise.resolve()
 
-// Draws onto a canvas now, and again once web fonts have loaded.
+// Draws onto a canvas once web fonts have loaded.
+// Drawn at 2x so text stays crisp when the camera zooms in.
+const RESOLUTION = 2
+
 export function makeCanvasTexture(width, height, draw) {
   const canvas = document.createElement('canvas')
-  canvas.width = width
-  canvas.height = height
+  canvas.width = width * RESOLUTION
+  canvas.height = height * RESOLUTION
   const ctx = canvas.getContext('2d')
   const texture = new THREE.CanvasTexture(canvas)
   texture.colorSpace = THREE.SRGBColorSpace
-  texture.anisotropy = 4
+  texture.anisotropy = 8
   const paint = () => {
     ctx.save()
-    ctx.clearRect(0, 0, width, height)
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    ctx.scale(RESOLUTION, RESOLUTION)
     draw(ctx, width, height)
     ctx.restore()
   }
-  paint()
+  // Paint once the web fonts are in; the loader covers the scene until then.
   FONTS_READY.then(() => {
     paint()
     texture.needsUpdate = true

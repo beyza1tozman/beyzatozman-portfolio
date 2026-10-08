@@ -6,7 +6,7 @@ import { projects } from '../data/projects'
 const isTouch = typeof window !== 'undefined' && window.matchMedia('(hover: none)').matches
 
 const HINTS = {
-  home: isTouch ? 'tap the menu board' : 'pick something from the menu board',
+  home: isTouch ? 'swipe to look around, tap the menu board' : 'drag to look around, pick something from the menu board',
   projects: isTouch ? 'tap a dish to flip it, tap again to order' : 'hover a dish to flip it, click to order',
 }
 
@@ -15,6 +15,9 @@ export default function Overlay() {
   const view = useStore((s) => s.view)
   const setView = useStore((s) => s.setView)
   const modalOpen = useStore((s) => !!s.openProjectId)
+  const orbit = useStore((s) => s.orbit)
+  const moved = orbit.yaw !== 0 || orbit.zoom !== 1
+  const { turn, zoomBy, resetOrbit } = useStore.getState()
 
   useEffect(() => {
     const onKey = (e) => {
@@ -62,6 +65,20 @@ export default function Overlay() {
         <button className="chunky ghost back-btn" onClick={() => setView('home')}>
           ← Back
         </button>
+      )}
+
+      {hasWebGL && view === 'home' && (
+        <div className="view-controls" role="group" aria-label="Look around">
+          <button className="chunky ghost" onClick={() => turn(-0.3)} aria-label="Turn left">←</button>
+          <button className="chunky ghost" onClick={() => zoomBy(0.8)} aria-label="Zoom in">+</button>
+          <button className="chunky ghost" onClick={() => zoomBy(1.25)} aria-label="Zoom out">−</button>
+          <button className="chunky ghost" onClick={() => turn(0.3)} aria-label="Turn right">→</button>
+          {moved && (
+            <button className="chunky start-btn" onClick={resetOrbit}>
+              Back to start
+            </button>
+          )}
+        </div>
       )}
 
       {hasWebGL && HINTS[view] && !modalOpen && (

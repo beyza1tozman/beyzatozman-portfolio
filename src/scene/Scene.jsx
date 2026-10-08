@@ -1,5 +1,4 @@
 import { Canvas } from '@react-three/fiber'
-import { AdaptiveDpr } from '@react-three/drei'
 import { useStore } from '../store'
 import Cafe from './Cafe'
 import Counter from './Counter'
@@ -13,7 +12,7 @@ export default function Scene() {
   return (
     <Canvas
       shadows
-      dpr={[1, 2]}
+      dpr={[1, 2.5]}
       camera={{ fov: 32, position: [10.5, 8.2, 13.5], near: 0.1, far: 100 }}
       onPointerMissed={() => useStore.getState().setHovered(null)}
       onCreated={() => document.fonts.ready.then(() => requestAnimationFrame(() => useStore.getState().setSceneReady()))}
@@ -44,7 +43,6 @@ export default function Scene() {
       <MenuBoard position={[2.5, -0.1, 5.2]} rotation-y={0.78} scale={1.3} />
 
       <CameraRig />
-      <AdaptiveDpr pixelated />
     </Canvas>
   )
 }

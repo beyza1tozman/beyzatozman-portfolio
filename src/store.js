@@ -6,12 +6,19 @@ const viewFromHash = () => {
   return VIEWS.includes(hash) ? hash : 'home'
 }
 
+// How far visitors can turn (radians) and zoom (distance factor) on the overview.
+export const ORBIT_LIMITS = { yawMin: -0.55, yawMax: 0.65, zoomMin: 0.5, zoomMax: 1.3 }
+const clamp = (v, min, max) => Math.min(max, Math.max(min, v))
+
 export const useStore = create((set) => ({
   // 'home' | 'projects' | 'about' | 'contact'
   view: viewFromHash(),
   hoveredId: null,
   openProjectId: null,
   sceneReady: false,
+  orbit: { yaw: 0, zoom: 1 },
+  // true when the current pointer gesture was a drag, so it shouldn't count as a click
+  dragMoved: false,
   setView: (view) => {
     history.replaceState(null, '', view === 'home' ? location.pathname : `#${view}`)
     set({ view, hoveredId: null })
@@ -20,6 +27,12 @@ export const useStore = create((set) => ({
   openProject: (openProjectId) => set({ openProjectId }),
   closeProject: () => set({ openProjectId: null }),
   setSceneReady: () => set({ sceneReady: true }),
+  turn: (dYaw) =>
+    set(({ orbit }) => ({ orbit: { ...orbit, yaw: clamp(orbit.yaw + dYaw, ORBIT_LIMITS.yawMin, ORBIT_LIMITS.yawMax) } })),
+  zoomBy: (factor) =>
+    set(({ orbit }) => ({ orbit: { ...orbit, zoom: clamp(orbit.zoom * factor, ORBIT_LIMITS.zoomMin, ORBIT_LIMITS.zoomMax) } })),
+  resetOrbit: () => set({ orbit: { yaw: 0, zoom: 1 } }),
+  setDragMoved: (dragMoved) => set({ dragMoved }),
 }))
 
 if (typeof window !== 'undefined') {

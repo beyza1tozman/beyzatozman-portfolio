@@ -50,7 +50,8 @@ export default function Cabinet() {
       position={CABINET_POSITION}
       rotation-y={Math.PI / 2}
       onClick={(e) => {
-        if (useStore.getState().view === 'projects') return
+        const { view, dragMoved } = useStore.getState()
+        if (view === 'projects' || dragMoved) return
         e.stopPropagation()
         setView('projects')
       }}

@@ -43,7 +43,8 @@ export default function FoodItem({ project, position }) {
     },
     onClick: (e) => {
       e.stopPropagation()
-      const { view, setView, hoveredId, setHovered, openProject } = useStore.getState()
+      const { view, setView, hoveredId, setHovered, openProject, dragMoved } = useStore.getState()
+      if (dragMoved) return
       if (view !== 'projects') return setView('projects')
       // on touch, first tap flips, second tap opens
       if (e.pointerType === 'touch' && hoveredId !== project.id) return setHovered(project.id)
