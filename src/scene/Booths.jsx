@@ -1,4 +1,5 @@
 import { Box, Cyl, Sphere, C } from './parts'
+import { CoffeeCup, SugarJar } from './Tableware'
 
 // facing: +1 means the seat faces +z
 function Bench({ position, facing = 1 }) {
@@ -23,9 +24,9 @@ function Table({ position }) {
       <Cyl args={[0.05, 0.05, 0.7, 10]} position={[0, 0.4, 0]} color="#2f2622" />
       <Box size={[1.3, 0.06, 0.75]} radius={0.025} position={[0, 0.76, 0]} color="#f7f1e5" />
       {/* cups & a sugar pot */}
-      <Cyl args={[0.05, 0.04, 0.08, 14]} position={[-0.3, 0.83, 0.15]} color="#fbf7ee" />
-      <Cyl args={[0.05, 0.04, 0.08, 14]} position={[0.32, 0.83, -0.12]} color="#fbf7ee" />
-      <Cyl args={[0.06, 0.06, 0.1, 14]} position={[0.05, 0.84, 0]} color="#d8b98a" />
+      <CoffeeCup position={[-0.3, 0.79, 0.15]} rotation-y={0.3} />
+      <CoffeeCup position={[0.32, 0.79, -0.12]} rotation-y={Math.PI + 0.3} />
+      <SugarJar position={[0.05, 0.79, 0]} />
       {/* menu stand */}
       <Box size={[0.2, 0.26, 0.02]} position={[-0.05, 0.92, -0.25]} rotation-x={-0.2} color="#fbf3dc" />
     </group>

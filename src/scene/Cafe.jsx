@@ -1,8 +1,8 @@
 import { useMemo, useRef } from 'react'
 import * as THREE from 'three'
 import { useFrame } from '@react-three/fiber'
-import { Box, Cyl, Sphere, C } from './parts'
-import { floorTexture } from '../lib/canvasTextures'
+import { Box, Cyl, Sphere, C, glassMat } from './parts'
+import { clockFaceTexture, floorTexture, kissatenPaintingTexture } from '../lib/canvasTextures'
 
 // Room footprint: x -5..5, z -4..4. Back wall at z=-4, left wall at x=-5.
 // A sidewalk strip in front (z 4..6.4) holds the menu board.
@@ -96,22 +96,48 @@ function Window({ position }) {
   )
 }
 
+// Regulator wall clock: hands follow the visitor's real local time and the
+// brass pendulum ticks once a second behind the glass.
 function Clock({ position }) {
+  const face = useMemo(() => clockFaceTexture(), [])
+  const hour = useRef()
   const minute = useRef()
-  useFrame((_, dt) => {
-    if (minute.current) minute.current.rotation.z -= dt * 0.05
+  const pendulum = useRef()
+  useFrame(({ clock }) => {
+    const now = new Date()
+    const m = now.getMinutes() + now.getSeconds() / 60
+    minute.current.rotation.z = -(m / 60) * Math.PI * 2
+    hour.current.rotation.z = -(((now.getHours() % 12) + m / 60) / 12) * Math.PI * 2
+    pendulum.current.rotation.z = Math.sin(clock.elapsedTime * Math.PI) * 0.12
   })
   return (
     <group position={position}>
-      <Cyl args={[0.36, 0.36, 0.08, 32]} rotation-x={Math.PI / 2} color={C.woodDark} />
-      <Cyl args={[0.3, 0.3, 0.1, 32]} rotation-x={Math.PI / 2} color="#fbf3dc" />
-      <Box size={[0.03, 0.2, 0.02]} position={[0, 0.08, 0.06]} color="#222" />
-      <group ref={minute} position={[0, 0, 0.07]}>
-        <Box size={[0.02, 0.26, 0.02]} position={[0, 0.11, 0]} color="#222" />
+      {/* round head */}
+      <Cyl args={[0.34, 0.34, 0.1, 40]} rotation-x={Math.PI / 2} color={C.woodDark} />
+      <mesh position={[0, 0, 0.052]}>
+        <torusGeometry args={[0.285, 0.014, 10, 48]} />
+        <meshStandardMaterial color="#d4a54a" metalness={0.7} roughness={0.3} />
+      </mesh>
+      <mesh position={[0, 0, 0.051]}>
+        <circleGeometry args={[0.28, 48]} />
+        <meshStandardMaterial map={face} roughness={0.6} />
+      </mesh>
+      <group ref={hour} position={[0, 0, 0.058]}>
+        <Box size={[0.026, 0.15, 0.008]} position={[0, 0.06, 0]} color="#2a211b" />
       </group>
+      <group ref={minute} position={[0, 0, 0.064]}>
+        <Box size={[0.016, 0.23, 0.008]} position={[0, 0.095, 0]} color="#2a211b" />
+      </group>
+      <Cyl args={[0.018, 0.018, 0.02, 12]} rotation-x={Math.PI / 2} position={[0, 0, 0.068]} color="#d4a54a" mat={{ metalness: 0.7, roughness: 0.3 }} />
       {/* pendulum case */}
-      <Box size={[0.34, 0.6, 0.08]} position={[0, -0.62, 0]} color={C.woodDark} />
-      <Cyl args={[0.08, 0.08, 0.04, 20]} rotation-x={Math.PI / 2} position={[0, -0.7, 0.05]} color="#d4a54a" mat={{ metalness: 0.6, roughness: 0.3 }} />
+      <Box size={[0.3, 0.62, 0.09]} radius={0.02} position={[0, -0.6, -0.01]} color={C.woodDark} />
+      <Box size={[0.22, 0.5, 0.01]} position={[0, -0.61, 0.03]} color="#3a2416" />
+      <group ref={pendulum} position={[0, -0.38, 0.042]}>
+        <Box size={[0.012, 0.32, 0.006]} position={[0, -0.16, 0]} color="#d4a54a" mat={{ metalness: 0.7, roughness: 0.3 }} />
+        <Cyl args={[0.055, 0.055, 0.012, 24]} rotation-x={Math.PI / 2} position={[0, -0.33, 0]} color="#d4a54a" mat={{ metalness: 0.75, roughness: 0.25 }} />
+      </group>
+      <Box size={[0.22, 0.5, 0.01]} position={[0, -0.61, 0.055]} mat={glassMat} />
+      <Box size={[0.34, 0.05, 0.11]} position={[0, -0.93, 0]} color={C.woodDark} />
     </group>
   )
 }
@@ -130,13 +156,17 @@ function PendantLamp({ position }) {
   )
 }
 
+// Framed painting of a little kissaten storefront.
 function Poster({ position, rotation }) {
+  const painting = useMemo(() => kissatenPaintingTexture(), [])
   return (
     <group position={position} rotation={rotation}>
-      <Box size={[0.9, 1.15, 0.06]} color={C.woodDark} />
-      <Box size={[0.76, 1.0, 0.03]} position={[0, 0, 0.03]} color="#e8c27a" />
-      <Sphere r={0.18} position={[0, 0.1, 0.05]} color="#c8423b" />
-      <Box size={[0.5, 0.06, 0.02]} position={[0, -0.28, 0.05]} color="#3d2a1c" />
+      <Box size={[0.92, 1.12, 0.07]} radius={0.015} color={C.woodDark} />
+      <Box size={[0.8, 1.0, 0.02]} position={[0, 0, 0.035]} color="#f4e9d3" />
+      <mesh position={[0, 0, 0.047]}>
+        <planeGeometry args={[0.66, 0.836]} />
+        <meshStandardMaterial map={painting} roughness={0.8} />
+      </mesh>
     </group>
   )
 }
