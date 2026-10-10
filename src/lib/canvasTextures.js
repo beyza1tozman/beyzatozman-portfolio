@@ -3,10 +3,8 @@ import * as THREE from 'three'
 const FONTS_READY =
   typeof document !== 'undefined' && document.fonts
     ? Promise.all([
-        document.fonts.load('800 40px Fraunces'),
-        document.fonts.load('400 40px Fraunces'),
-        document.fonts.load('40px "Gochi Hand"'),
-        document.fonts.load('500 20px "Work Sans"'),
+        document.fonts.load('40px "Single Day"'),
+        document.fonts.load('40px "Gaegu"'),
       ]).catch(() => {})
     : Promise.resolve()
 
@@ -73,68 +71,80 @@ export function floorTexture() {
   return t
 }
 
-export function chalkboardTexture(items, width = 512, height = 700) {
-  return makeCanvasTexture(width, height, (ctx, w, h) => {
-    ctx.fillStyle = '#2b2f2c'
-    ctx.fillRect(0, 0, w, h)
-    // chalk smudges
-    for (let i = 0; i < 40; i++) {
-      ctx.fillStyle = `rgba(255,255,255,${Math.random() * 0.03})`
-      ctx.beginPath()
-      ctx.ellipse(Math.random() * w, Math.random() * h, 60 + Math.random() * 80, 20 + Math.random() * 30, Math.random() * 3, 0, Math.PI * 2)
-      ctx.fill()
-    }
-    ctx.fillStyle = '#f3efe6'
-    ctx.strokeStyle = '#f3efe6'
-    ctx.textAlign = 'center'
-    ctx.font = '74px "Gochi Hand"'
-    ctx.fillText('Kissaten', w / 2, 92)
-    ctx.font = '800 30px Fraunces'
-    ctx.fillText('B E Y Z A', w / 2, 136)
-    ctx.font = '24px "Gochi Hand"'
-    ctx.fillStyle = '#e8b4b4'
-    ctx.fillText('code · data viz · stories', w / 2, 172)
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath()
+  ctx.moveTo(x + r, y)
+  ctx.arcTo(x + w, y, x + w, y + h, r)
+  ctx.arcTo(x + w, y + h, x, y + h, r)
+  ctx.arcTo(x, y + h, x, y, r)
+  ctx.arcTo(x, y, x + w, y, r)
+  ctx.closePath()
+}
 
-    // little coffee cup doodle
+// Dark sandwich-board menu: boxed title, chalk item list, coffee doodle.
+export function chalkboardTexture(items, width = 512, height = 700) {
+  const INK = '#f2e6cc' // chalk
+  // berry pink is too dark to read on the chalkboard, so prices are softer chalk
+  const PRICE = 'rgba(242,230,204,0.7)'
+  return makeCanvasTexture(width, height, (ctx, w, h) => {
+    ctx.fillStyle = '#232a26'
+    ctx.fillRect(0, 0, w, h)
+
+    // title in a chalk box
+    ctx.strokeStyle = INK
     ctx.lineWidth = 3
-    ctx.strokeStyle = '#f3efe6'
+    roundRect(ctx, 40, 34, w - 80, 92, 6)
+    ctx.stroke()
+    ctx.fillStyle = INK
+    ctx.textAlign = 'center'
+    ctx.font = '54px "Single Day"'
+    ctx.fillText('MENU', w / 2, 99)
+
+    for (const { label, price, rect: [x, y, bw, bh] } of items) {
+      const base = y + bh / 2 + 14
+      ctx.fillStyle = INK
+      ctx.textAlign = 'left'
+      ctx.font = '46px "Gaegu"'
+      ctx.fillText(label, x + 8, base)
+      const labelEnd = x + 8 + ctx.measureText(label).width + 14
+      ctx.textAlign = 'right'
+      ctx.font = '28px "Gaegu"'
+      ctx.fillStyle = PRICE
+      ctx.fillText(price, x + bw - 8, base)
+      const priceStart = x + bw - 8 - ctx.measureText(price).width - 14
+      // dotted leader
+      ctx.fillStyle = 'rgba(242,230,204,0.45)'
+      for (let lx = labelEnd; lx < priceStart; lx += 12) ctx.fillRect(lx, base - 6, 3, 3)
+    }
+
+    // coffee cup on a saucer, bottom right
+    const cx = w - 120
+    ctx.strokeStyle = INK
+    ctx.lineWidth = 3
     ctx.beginPath()
-    ctx.moveTo(w / 2 - 26, 200)
-    ctx.lineTo(w / 2 - 20, 238)
-    ctx.lineTo(w / 2 + 20, 238)
-    ctx.lineTo(w / 2 + 26, 200)
+    ctx.ellipse(cx, 652, 62, 10, 0, 0, Math.PI * 2)
+    ctx.stroke()
+    ctx.beginPath()
+    ctx.moveTo(cx - 40, 590)
+    ctx.quadraticCurveTo(cx - 38, 642, cx, 644)
+    ctx.quadraticCurveTo(cx + 38, 642, cx + 40, 590)
     ctx.closePath()
     ctx.stroke()
     ctx.beginPath()
-    ctx.arc(w / 2 + 30, 215, 9, -Math.PI / 2, Math.PI / 2)
+    ctx.arc(cx + 46, 608, 11, -Math.PI / 2, Math.PI / 2)
     ctx.stroke()
-    for (const dx of [-10, 4]) {
+    for (const dx of [-14, 6]) {
       ctx.beginPath()
-      ctx.moveTo(w / 2 + dx, 194)
-      ctx.quadraticCurveTo(w / 2 + dx - 8, 184, w / 2 + dx, 174)
+      ctx.moveTo(cx + dx, 578)
+      ctx.quadraticCurveTo(cx + dx - 10, 562, cx + dx, 546)
+      ctx.quadraticCurveTo(cx + dx + 10, 532, cx + dx, 518)
       ctx.stroke()
     }
 
-    ctx.textAlign = 'left'
-    for (const item of items) {
-      ctx.fillStyle = '#f3efe6'
-      ctx.font = '46px "Gochi Hand"'
-      ctx.fillText(item.label, 56, item.y)
-      const labelEnd = 56 + ctx.measureText(item.label).width + 14
-      ctx.textAlign = 'right'
-      ctx.font = '30px "Gochi Hand"'
-      ctx.fillStyle = '#e8b4b4'
-      ctx.fillText(item.price, w - 56, item.y)
-      const priceStart = w - 56 - ctx.measureText(item.price).width - 14
-      ctx.textAlign = 'left'
-      // dotted leader
-      ctx.fillStyle = 'rgba(243,239,230,0.45)'
-      for (let x = labelEnd; x < priceStart; x += 12) ctx.fillRect(x, item.y - 6, 3, 3)
-    }
-    ctx.font = '22px "Gochi Hand"'
-    ctx.fillStyle = 'rgba(243,239,230,0.7)'
+    ctx.font = '22px "Gaegu"'
+    ctx.fillStyle = 'rgba(242,230,204,0.7)'
     ctx.textAlign = 'center'
-    ctx.fillText('~ pick something from the menu ~', w / 2, h - 34)
+    ctx.fillText('~ pick one ~', w / 2, 560)
   })
 }
 
@@ -156,19 +166,19 @@ export function projectCardTexture(project) {
     ctx.strokeRect(26, 26, w - 52, h - 52)
     ctx.setLineDash([])
 
-    ctx.fillStyle = '#a8686a'
-    ctx.font = '30px "Gochi Hand"'
+    ctx.fillStyle = '#7d2240'
+    ctx.font = '30px "Gaegu"'
     ctx.fillText(`No.${project.no} · ${project.dish}`, 50, 82)
 
     ctx.fillStyle = '#241c17'
-    ctx.font = '800 44px Fraunces'
+    ctx.font = '44px "Single Day"'
     let y = wrapText(ctx, project.title.toUpperCase(), 50, 140, w - 100, 48)
 
-    ctx.font = '400 27px Fraunces'
+    ctx.font = '27px "Gaegu"'
     y = wrapText(ctx, project.summary, 50, y + 14, w - 100, 36)
 
     // tech chips
-    ctx.font = '500 20px "Work Sans"'
+    ctx.font = '20px "Gaegu"'
     let x = 50
     y = Math.max(y + 10, 0)
     for (const tech of project.stack.slice(0, 4)) {
@@ -184,7 +194,7 @@ export function projectCardTexture(project) {
     }
 
     ctx.fillStyle = '#241c17'
-    ctx.font = '30px "Gochi Hand"'
+    ctx.font = '30px "Gaegu"'
     ctx.textAlign = 'center'
     ctx.fillText('click to order', w / 2, h - 50)
   })
@@ -201,16 +211,16 @@ export function priceTagTexture(project) {
     ctx.fillStyle = '#241c17'
     ctx.textAlign = 'center'
     let size = 26
-    do ctx.font = `600 ${size--}px Fraunces`
+    do ctx.font = `${size--}px "Gaegu"`
     while (ctx.measureText(project.dish).width > w - 24 && size > 12)
     ctx.fillText(project.dish, w / 2, 42)
-    ctx.font = '24px "Gochi Hand"'
-    ctx.fillStyle = '#a8686a'
+    ctx.font = '24px "Gaegu"'
+    ctx.fillStyle = '#7d2240'
     ctx.fillText(`No.${project.no}`, w / 2, 76)
   })
 }
 
-export function textSignTexture(text, { bg = '#b8382f', fg = '#fbf3dc', font = '800 64px Fraunces', width = 512, height = 128 } = {}) {
+export function textSignTexture(text, { bg = '#b8382f', fg = '#fbf3dc', font = '64px "Single Day"', width = 512, height = 128 } = {}) {
   return makeCanvasTexture(width, height, (ctx, w, h) => {
     ctx.fillStyle = bg
     ctx.fillRect(0, 0, w, h)
@@ -240,15 +250,15 @@ export function clockFaceTexture() {
       ctx.stroke()
     }
     ctx.fillStyle = '#2a211b'
-    ctx.font = '400 30px Fraunces'
+    ctx.font = '30px "Gaegu"'
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
     for (let h = 1; h <= 12; h++) {
       const a = (h / 12) * Math.PI * 2
       ctx.fillText(String(h), Math.sin(a) * (r - 46), -Math.cos(a) * (r - 46) + 2)
     }
-    ctx.font = '22px "Gochi Hand"'
-    ctx.fillStyle = '#a8686a'
+    ctx.font = '22px "Gaegu"'
+    ctx.fillStyle = '#7d2240'
     ctx.fillText('kissaten', 0, 38)
   })
 }
@@ -303,9 +313,9 @@ export function kissatenPaintingTexture() {
     ctx.fillStyle = '#5a3a26'
     ctx.fillRect(111, 220, 2, 20)
     ctx.fillRect(70, 296, 84, 6)
-    ctx.fillStyle = '#fbf8f2'
+    ctx.fillStyle = '#f3e8d2'
     ctx.fillRect(100, 282, 18, 14)
-    ctx.strokeStyle = '#fbf8f2'
+    ctx.strokeStyle = '#f3e8d2'
     ctx.lineWidth = 3
     ctx.beginPath()
     ctx.arc(120, 289, 5, -Math.PI / 2, Math.PI / 2)
@@ -328,7 +338,7 @@ export function kissatenPaintingTexture() {
     ctx.fillStyle = '#f6ecd6'
     ctx.fillRect(w - 30, 116, 18, 46)
     ctx.fillStyle = '#c8423b'
-    ctx.font = '800 14px Fraunces'
+    ctx.font = '14px "Single Day"'
     ctx.textAlign = 'center'
     ;['C', 'A', 'F', 'É'].forEach((c, i) => ctx.fillText(c, w - 21, 129 + i * 10))
     // potted plant by the door

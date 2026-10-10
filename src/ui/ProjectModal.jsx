@@ -21,7 +21,7 @@ function Gallery({ project }) {
   const current = images[index]
   return (
     <div>
-      <div className="gallery-frame">
+      <div className="gallery-frame has-image">
         <img src={current.src} alt={current.alt} />
       </div>
       {images.length > 1 && (
@@ -82,40 +82,49 @@ export default function ProjectModal() {
             exit={{ y: 30, opacity: 0 }}
             transition={{ type: 'spring', stiffness: 260, damping: 24 }}
           >
-            <div className="modal-grid">
-              <Gallery project={project} />
-              <div>
+            <div className="paper-body">
+              <header className="menu-head">
+                <p className="menu-kicker">MENU</p>
                 <h2 id="project-title">{project.title}</h2>
-                <p className="dish">No.{project.no} · {project.dish}</p>
-                <p>{project.description}</p>
-                <h3>On the plate</h3>
-                <ul>
-                  {project.highlights.map((h) => (
-                    <li key={h}>{h}</li>
-                  ))}
-                </ul>
-                <h3>Ingredients</h3>
-                <div className="chips">
-                  {project.stack.map((t) => (
-                    <span key={t}>{t}</span>
-                  ))}
+                <p className="dish menu-line">
+                  <span>{project.dish}</span>
+                  <span className="leader" aria-hidden="true" />
+                  <span className="no">No.{project.no}</span>
+                </p>
+              </header>
+              <div className="modal-grid">
+                <Gallery project={project} />
+                <div>
+                  <p>{project.description}</p>
+                  <h3>On the plate</h3>
+                  <ul>
+                    {project.highlights.map((h) => (
+                      <li key={h}>{h}</li>
+                    ))}
+                  </ul>
+                  <h3>Ingredients</h3>
+                  <div className="chips">
+                    {project.stack.map((t) => (
+                      <span key={t}>{t}</span>
+                    ))}
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="actions">
-              {project.links.demo && (
-                <a className="chunky" href={project.links.demo} target="_blank" rel="noopener noreferrer">
-                  Live demo
-                </a>
-              )}
-              {project.links.repo && (
-                <a className="chunky" href={project.links.repo} target="_blank" rel="noopener noreferrer">
-                  GitHub
-                </a>
-              )}
-              <button className="chunky ghost" onClick={close}>
-                Close
-              </button>
+              <div className="actions">
+                {project.links.demo && (
+                  <a className="chunky" href={project.links.demo} target="_blank" rel="noopener noreferrer">
+                    Live demo
+                  </a>
+                )}
+                {project.links.repo && (
+                  <a className="chunky" href={project.links.repo} target="_blank" rel="noopener noreferrer">
+                    GitHub
+                  </a>
+                )}
+                <button className="chunky ghost" onClick={close}>
+                  Close
+                </button>
+              </div>
             </div>
           </motion.article>
         </motion.div>

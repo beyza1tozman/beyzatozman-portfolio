@@ -73,7 +73,6 @@ function Fridge() {
       <Box size={[0.82, 0.03, 0.77]} position={[0, 1.3, 0]} color="#3e6870" />
       <Box size={[0.04, 0.3, 0.05]} position={[0.42, 1.55, 0.2]} color={C.metal} mat={{ metalness: 0.6 }} />
       <Box size={[0.04, 0.3, 0.05]} position={[0.42, 1.0, 0.2]} color={C.metal} mat={{ metalness: 0.6 }} />
-      <Cyl args={[0.16, 0.16, 0.2, 16]} position={[0, 2.1, 0]} color="#d9824a" />
     </group>
   )
 }

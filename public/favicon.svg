@@ -1,9 +1,19 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="4 4 58 58">
-  <!-- little kissaten coffee cup -->
-  <path d="M22 9c-3 4 3 6 0 10M32 7c-3 4 3 6 0 10" fill="none" stroke="#c98f8f" stroke-width="3" stroke-linecap="round"/>
-  <path d="M46 31h3a7 7 0 0 1 0 14h-4" fill="none" stroke="#3b2418" stroke-width="5" stroke-linecap="round"/>
-  <path d="M10 24h38l-3.5 24a7 7 0 0 1-7 6H20.5a7 7 0 0 1-7-6z" fill="#f4e9d3" stroke="#3b2418" stroke-width="4" stroke-linejoin="round"/>
-  <path d="M12.5 28h33" stroke="#7a4e2d" stroke-width="4" stroke-linecap="round"/>
-  <path d="M15 37h28" stroke="#c8423b" stroke-width="4"/>
-  <ellipse cx="29" cy="58" rx="22" ry="3.5" fill="#3b2418"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="2 0 196 150">
+  <!-- cream porcelain coffee cup on a saucer, with soft steam -->
+  <defs>
+    <linearGradient id="p" x1="0" x2="1">
+      <stop offset="0.3" stop-color="#f3e6cc"/>
+      <stop offset="1" stop-color="#cdb48e"/>
+    </linearGradient>
+  </defs>
+  <g fill="none" stroke="#e6d6b8" stroke-width="11" stroke-linecap="round" opacity="0.75">
+    <path d="M90 40 C 80 28, 102 20, 92 4"/>
+    <path d="M114 40 C 104 28, 126 20, 116 4"/>
+  </g>
+  <ellipse cx="100" cy="122" rx="94" ry="24" fill="#e8d8b8" stroke="#3b2418" stroke-width="5"/>
+  <path d="M56 66 C 18 56, 16 102, 72 104" fill="none" stroke="#3b2418" stroke-width="18" stroke-linecap="round"/>
+  <path d="M56 66 C 18 56, 16 102, 72 104" fill="none" stroke="#efe0c2" stroke-width="9" stroke-linecap="round"/>
+  <path d="M46 52 C 48 96, 72 122, 88 124 L 120 124 C 136 122, 160 96, 162 52 A 58 15 0 0 1 46 52 Z" fill="url(#p)" stroke="#3b2418" stroke-width="5" stroke-linejoin="round"/>
+  <ellipse cx="104" cy="52" rx="58" ry="15" fill="#f3e6cc" stroke="#3b2418" stroke-width="5"/>
+  <ellipse cx="104" cy="54" rx="47" ry="9.5" fill="#3a140c"/>
 </svg>

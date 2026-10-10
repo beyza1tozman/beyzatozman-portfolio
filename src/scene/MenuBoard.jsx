@@ -3,18 +3,24 @@ import { useFrame } from '@react-three/fiber'
 import { useCursor } from '@react-three/drei'
 import { useStore } from '../store'
 import { chalkboardTexture } from '../lib/canvasTextures'
-import { Box, C } from './parts'
+import { Box, Sphere } from './parts'
 
 const TEX_W = 512
 const TEX_H = 700
 const FACE_W = 1.32
 const FACE_H = (FACE_W * TEX_H) / TEX_W
+const FRAME = '#6e4226'
+const LEG = 0.25 // posts reach below the board
+const CAP = 0.12 // and stick up above it
+const POST_H = LEG + FACE_H + CAP
+const BOARD_Y = LEG + FACE_H / 2
 
+// Layout in texture pixels: [x, y, width, height]
 export const MENU_ITEMS = [
-  { id: 'projects', label: 'Projects', price: '4 dishes', y: 330 },
-  { id: 'about', label: 'About Me', price: 'a cup', y: 410 },
-  { id: 'contact', label: 'Contact', price: 'say hi', y: 490 },
-  { id: 'blog', label: 'Blog', price: 'fresh ↗', y: 570, href: 'https://beyzatozman.netlify.app' },
+  { id: 'projects', label: 'Projects', price: '4 dishes', rect: [40, 150, 432, 82] },
+  { id: 'about', label: 'About Me', price: 'a cup', rect: [40, 236, 432, 82] },
+  { id: 'contact', label: 'Contact', price: 'say hi', rect: [40, 322, 432, 82] },
+  { id: 'blog', label: 'Blog', price: 'fresh ↗', rect: [40, 408, 432, 82], href: 'https://beyzatozman.netlify.app' },
 ]
 
 export function chooseMenuItem(item) {
@@ -33,9 +39,12 @@ function Hotspot({ item }) {
     if (!glow.current) return
     glow.current.material.opacity = hovered ? 0.12 + Math.sin(state.clock.elapsedTime * 6) * 0.03 : 0
   })
-  const y = toLocalY(item.y - 14)
+  const [x, y, w, h] = item.rect
+  const width = (w / TEX_W) * FACE_W
+  const height = (h / TEX_H) * FACE_H
+  const cx = ((x + w / 2) / TEX_W) * FACE_W - FACE_W / 2
   return (
-    <group position={[0, y, 0.006]}>
+    <group position={[cx, toLocalY(y + h / 2), 0.006]}>
       <mesh
         ref={glow}
         onPointerOver={(e) => (e.stopPropagation(), setHovered(true))}
@@ -45,45 +54,60 @@ function Hotspot({ item }) {
           if (!useStore.getState().dragMoved) chooseMenuItem(item)
         }}
       >
-        <planeGeometry args={[FACE_W - 0.1, 0.16]} />
-        <meshBasicMaterial color="#ffffff" transparent opacity={0} depthWrite={false} />
-      </mesh>
-      {/* chalk underline */}
-      <mesh position={[-0.3, -0.07, 0.001]} visible={hovered}>
-        <planeGeometry args={[0.5, 0.012]} />
-        <meshBasicMaterial color="#f3efe6" />
+        <planeGeometry args={[width, height]} />
+        <meshBasicMaterial color="#f2e6cc" transparent opacity={0} depthWrite={false} />
       </mesh>
     </group>
   )
 }
 
-// Wooden A-frame chalkboard standing on the sidewalk in front of the cafe.
+// Wooden frame: two posts with round knobs, top and bottom rails around the board.
+function Frame({ children }) {
+  const px = FACE_W / 2 + 0.04
+  const railY = FACE_H / 2 + 0.035
+  return (
+    <group>
+      {[-px, px].map((x) => (
+        <group key={x} position-x={x}>
+          <Box size={[0.08, POST_H, 0.07]} position={[0, POST_H / 2, 0]} color={FRAME} />
+          <Sphere r={0.05} position={[0, POST_H + 0.02, 0]} color={FRAME} />
+        </group>
+      ))}
+      <group position-y={BOARD_Y}>
+        <Box size={[FACE_W + 0.08, 0.07, 0.06]} position={[0, railY, 0]} color={FRAME} />
+        <Box size={[FACE_W + 0.08, 0.07, 0.06]} position={[0, -railY, 0]} color={FRAME} />
+        <Box size={[FACE_W, FACE_H, 0.03]} color="#1c221f" />
+        {children}
+      </group>
+    </group>
+  )
+}
+
+// Wooden A-frame sandwich board with a dark chalkboard menu.
 export default function MenuBoard(props) {
   const tex = useMemo(() => chalkboardTexture(MENU_ITEMS, TEX_W, TEX_H), [])
-  const frame = FACE_H + 0.16
+  // lean angle; z offset puts both post tops together at the hinge
+  const lean = 0.2
+  const z = Math.sin(lean) * POST_H
   return (
     <group {...props}>
       {/* back leg */}
-      <group rotation-x={0.2} position={[0, 0, -0.4]}>
-        <Box size={[FACE_W + 0.16, frame, 0.05]} position={[0, frame / 2, -0.02]} color={C.wood} />
+      <group rotation-x={lean} position={[0, 0, -z]}>
+        <Frame />
       </group>
       {/* front board, leaning back */}
-      <group rotation-x={-0.2} position={[0, 0, 0.4]}>
-        <group position={[0, frame / 2 + 0.02, 0]}>
-          <Box size={[FACE_W + 0.16, frame, 0.06]} color={C.wood} />
-          <mesh position={[0, 0, 0.031]}>
+      <group rotation-x={-lean} position={[0, 0, z]}>
+        <Frame>
+          <mesh position={[0, 0, 0.016]}>
             <planeGeometry args={[FACE_W, FACE_H]} />
             <meshStandardMaterial map={tex} roughness={0.95} />
           </mesh>
-          {/* chalk ledge */}
-          <Box size={[FACE_W + 0.1, 0.04, 0.1]} position={[0, -FACE_H / 2 - 0.02, 0.06]} color={C.woodDark} />
-          <Box size={[0.12, 0.025, 0.025]} position={[0.3, -FACE_H / 2 + 0.01, 0.08]} color="#f3efe6" />
-          <group position={[0, 0, 0.032]}>
+          <group position={[0, 0, 0.018]}>
             {MENU_ITEMS.map((item) => (
               <Hotspot key={item.id} item={item} />
             ))}
           </group>
-        </group>
+        </Frame>
       </group>
     </group>
   )

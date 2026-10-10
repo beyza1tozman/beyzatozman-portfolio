@@ -129,9 +129,12 @@ function useOrbitInput(dom) {
   }, [dom])
 }
 
+const FOG_NEAR = 28
+const FOG_FAR = 48
+
 export default function CameraRig() {
   const view = useStore((s) => s.view)
-  const { camera, size, gl } = useThree()
+  const { camera, size, gl, scene } = useThree()
   const target = useRef(new THREE.Vector3(...VIEWS.home.target))
   const goalPos = useRef(new THREE.Vector3())
   const goalTarget = useRef(new THREE.Vector3())
@@ -163,6 +166,12 @@ export default function CameraRig() {
       spherical.phi += s.pitch
       spherical.radius *= s.zoom
       goalPos.current.copy(goalTarget.current).add(offset.setFromSpherical(spherical))
+      // push the fog back when zoomed out so the cafe doesn't fade away
+      if (scene.fog) {
+        const f = Math.max(1, s.zoom)
+        scene.fog.near = FOG_NEAR * f
+        scene.fog.far = FOG_FAR * f
+      }
     }
 
     if (settled.current && base === VIEWS.home) {

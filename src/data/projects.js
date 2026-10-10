@@ -43,7 +43,7 @@ export const projects = [
       demo: 'https://beyza1tozman.github.io/uni-passau-data-visualization-alloy-dashboard/',
       repo: 'https://github.com/beyza1tozman/uni-passau-data-visualization-alloy-dashboard',
     },
-    images: [],
+    images: [{ src: '/projects/alloy/01.png', alt: 'Dashboard with violin plots of scrap mixing ratios, a property deviation chart and a scrap × property heatmap' }],
   },
   {
     id: 'book-rec',
@@ -62,9 +62,10 @@ export const projects = [
     ],
     stack: ['Python', 'scikit-learn', 'FastAPI', 'NLTK', 'JavaScript'],
     links: {
+      demo: 'https://beyza1tozman.github.io/Book-Recommendation-Game/',
       repo: 'https://github.com/beyza1tozman/Book-Recommendation-Game',
     },
-    images: [],
+    images: [{ src: '/projects/book-rec/01.png', alt: 'Hand-drawn red bookshop front with an owl in a scarf holding a cup' }],
   },
   {
     id: 'blog',

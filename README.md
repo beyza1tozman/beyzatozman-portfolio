@@ -1,4 +1,4 @@
-# Kissaten Beyza
+# Beyza Tozman Portfolio
 
 My portfolio as a little 3D retro Japanese coffee shop (kissaten). Pick something from the chalkboard menu; each fake-food sample in the display cabinet is one of my projects.
 

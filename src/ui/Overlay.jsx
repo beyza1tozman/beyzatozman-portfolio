@@ -30,7 +30,7 @@ export default function Overlay() {
   return (
     <>
       <header className="topbar">
-        <button className="brand" onClick={() => setView('home')}>
+        <button className="brand" onClick={() => setView('about')}>
           Beyza Tozman
         </button>
         <nav className="topnav" aria-label="Main">

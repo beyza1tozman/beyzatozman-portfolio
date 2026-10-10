@@ -13,7 +13,7 @@ export default function Scene() {
     <Canvas
       shadows
       dpr={[1, 2.5]}
-      camera={{ fov: 32, position: [10.5, 8.2, 13.5], near: 0.5, far: 80 }}
+      camera={{ fov: 32, position: [10.5, 8.2, 13.5], near: 0.3, far: 140 }}
       onPointerMissed={() => useStore.getState().setHovered(null)}
       onCreated={() => document.fonts.ready.then(() => requestAnimationFrame(() => useStore.getState().setSceneReady()))}
     >

@@ -12,8 +12,11 @@ export const CONTACT = {
 function About() {
   return (
     <>
-      <h2 id="panel-title">About me</h2>
-      <p className="dish">the house blend</p>
+      <header className="menu-head">
+        <p className="menu-kicker">MENU</p>
+        <h2 id="panel-title">About me</h2>
+        <p className="dish">the house blend</p>
+      </header>
       <p>
         Hi, I’m Beyza, a software and AI engineer doing my M.Sc. in Computer Science at the University of Passau.
         I build end-to-end things where machine learning, computer vision and data visualization meet, from
@@ -38,8 +41,11 @@ function About() {
 function Contact() {
   return (
     <>
-      <h2 id="panel-title">Contact</h2>
-      <p className="dish">leave a note on the counter</p>
+      <header className="menu-head">
+        <p className="menu-kicker">MENU</p>
+        <h2 id="panel-title">Contact</h2>
+        <p className="dish">leave a note on the counter</p>
+      </header>
       <p>Want to talk about a project, a Werkstudent role, or a good book? I’d love to hear from you.</p>
       <p>
         <a className="contact-email" href={`mailto:${CONTACT.email}`}>
@@ -90,12 +96,14 @@ export default function InfoPanel() {
             exit={{ y: 30, opacity: 0 }}
             transition={{ type: 'spring', stiffness: 260, damping: 24 }}
           >
-            {view === 'about' ? <About /> : <Contact />}
-            <div className="actions">
-              <span />
-              <button className="chunky ghost" onClick={() => setView('home')} autoFocus>
-                Close
-              </button>
+            <div className="paper-body">
+              {view === 'about' ? <About /> : <Contact />}
+              <div className="actions">
+                <span />
+                <button className="chunky ghost" onClick={() => setView('home')} autoFocus>
+                  Close
+                </button>
+              </div>
             </div>
           </motion.section>
         </motion.div>

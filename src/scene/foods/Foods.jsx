@@ -41,7 +41,7 @@ export function Sandwich() {
               return el
             })}
             {/* powdered sugar */}
-            <Wedge position={[0, y + 0.004, 0]} color="#fffaf2" h={0.008} r={0.13} />
+            <Wedge position={[0, y + 0.004, 0]} color="#f6ead4" h={0.008} r={0.13} />
           </group>
         )
       })}
@@ -74,8 +74,8 @@ export function Parfait() {
       })}
       <Cyl args={[0.11, 0.05, 0.27, 24, 1, true]} position={[0, 0.11 + 0.135, 0]} mat={{ ...glassMat, side: 2 }} />
       {/* whipped cream swirls */}
-      <Sphere r={0.08} scale={[1, 0.6, 1]} position={[0, 0.39, 0]} color="#fffaf2" />
-      <Sphere r={0.05} scale={[1, 0.8, 1]} position={[0, 0.44, 0]} color="#fffaf2" />
+      <Sphere r={0.08} scale={[1, 0.6, 1]} position={[0, 0.39, 0]} color="#f6ead4" />
+      <Sphere r={0.05} scale={[1, 0.8, 1]} position={[0, 0.44, 0]} color="#f6ead4" />
       <Sphere r={0.028} position={[0.01, 0.5, 0]} color="#c41f2e" mat={{ roughness: 0.2 }} />
       {/* wafer + pocky */}
       <Box size={[0.03, 0.14, 0.07]} position={[-0.05, 0.47, 0.02]} rotation-z={0.25} color="#e2b26a" />

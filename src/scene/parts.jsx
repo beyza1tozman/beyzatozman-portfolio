@@ -21,7 +21,7 @@ const sphereGeo = (r, w, h) => cached(geometries, `sph${r},${w},${h}`, () => new
 const standard = (color, roughness, mat) =>
   cached(materials, `${color}|${roughness}|${JSON.stringify(mat ?? {})}`, () => new THREE.MeshStandardMaterial({ color, roughness, ...mat }))
 
-export function Box({ size = [1, 1, 1], color = '#fff', radius = 0, mat, children, ...props }) {
+export function Box({ size = [1, 1, 1], color = '#f4e9d3', radius = 0, mat, children, ...props }) {
   const material = standard(color, 0.75, mat)
   if (radius) {
     return (
@@ -38,11 +38,11 @@ export function Box({ size = [1, 1, 1], color = '#fff', radius = 0, mat, childre
 }
 
 // args: [radiusTop, radiusBottom, height, radialSegments, heightSegments, openEnded, thetaStart, thetaLength]
-export function Cyl({ args = [0.5, 0.5, 1, 24], color = '#fff', mat, ...props }) {
+export function Cyl({ args = [0.5, 0.5, 1, 24], color = '#f4e9d3', mat, ...props }) {
   return <mesh geometry={cylGeo(args)} material={standard(color, 0.7, mat)} castShadow receiveShadow {...props} />
 }
 
-export function Sphere({ r = 0.5, color = '#fff', mat, segments = 20, ...props }) {
+export function Sphere({ r = 0.5, color = '#f4e9d3', mat, segments = 20, ...props }) {
   return (
     <mesh
       geometry={sphereGeo(r, segments, Math.round(segments * 0.75))}

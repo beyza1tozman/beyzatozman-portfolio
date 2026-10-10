@@ -7,7 +7,7 @@ import { makeCanvasTexture } from '../lib/canvasTextures'
 const lathe = (points, segments = 20) =>
   new THREE.LatheGeometry(points.map(([x, y]) => new THREE.Vector2(x, y)), segments)
 
-const porcelain = new THREE.MeshStandardMaterial({ color: '#fbf8f2', roughness: 0.25, side: THREE.DoubleSide })
+const porcelain = new THREE.MeshStandardMaterial({ color: '#f3e8d2', roughness: 0.25, side: THREE.DoubleSide })
 const coffee = new THREE.MeshStandardMaterial({ color: '#2a1609', roughness: 0.15 })
 const steel = new THREE.MeshStandardMaterial({ color: '#cfccc6', roughness: 0.3, metalness: 0.85, side: THREE.DoubleSide })
 
@@ -180,7 +180,7 @@ const tinLabel = (body, band) =>
     ctx.fillStyle = band
     ctx.fillRect(0, h * 0.3, w, h * 0.4)
     ctx.fillStyle = body
-    ctx.font = '800 15px Fraunces'
+    ctx.font = '15px "Single Day"'
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
     // the label wraps the tin twice so it reads from any angle

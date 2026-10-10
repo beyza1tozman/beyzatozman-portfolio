@@ -8,7 +8,7 @@ const viewFromHash = () => {
 
 // Visitors can turn all the way around the cafe. Pitch (radians, added to the
 // starting tilt) keeps the camera above the floor; zoom is a distance factor.
-export const ORBIT_LIMITS = { pitchMin: -0.75, pitchMax: 0.3, zoomMin: 0.5, zoomMax: 1.3 }
+export const ORBIT_LIMITS = { pitchMin: -0.75, pitchMax: 0.3, zoomMin: 0.25, zoomMax: 2 }
 const TAU = Math.PI * 2
 const clamp = (v, min, max) => Math.min(max, Math.max(min, v))
 

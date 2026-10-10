@@ -42,7 +42,7 @@ function Awning() {
 }
 
 export default function Cabinet() {
-  const sign = useMemo(() => textSignTexture('MENU', { bg: '#1f2a2a', fg: '#f4e9d3', font: '800 72px Fraunces' }), [])
+  const sign = useMemo(() => textSignTexture('MENU', { bg: '#1f2a2a', fg: '#f4e9d3', font: '72px "Single Day"' }), [])
   const setView = useStore((s) => s.setView)
 
   return (
