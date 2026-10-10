@@ -15,6 +15,7 @@ export default function Overlay() {
   const view = useStore((s) => s.view)
   const setView = useStore((s) => s.setView)
   const modalOpen = useStore((s) => !!s.openProjectId)
+  const soundOn = useStore((s) => s.soundOn)
   const orbit = useStore((s) => s.orbit)
   // any turn that isn't a whole number of full circles counts as moved
   const moved = Math.abs(Math.sin(orbit.yaw / 2)) > 0.01 || orbit.pitch !== 0 || orbit.zoom !== 1
@@ -45,6 +46,16 @@ export default function Overlay() {
               </button>
             )
           )}
+          <button className="sound-btn" aria-pressed={soundOn} aria-label={soundOn ? 'Mute sound' : 'Turn sound on'} title={soundOn ? 'Mute sound' : 'Turn sound on'} onClick={useStore.getState().toggleSound}>
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" />
+              {soundOn ? (
+                <path d="M15.5 9.2a4 4 0 0 1 0 5.6M18 6.8a7.5 7.5 0 0 1 0 10.4" />
+              ) : (
+                <path d="M16 9.5l5 5M21 9.5l-5 5" />
+              )}
+            </svg>
+          </button>
         </nav>
       </header>
 

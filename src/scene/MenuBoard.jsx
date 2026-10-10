@@ -3,6 +3,7 @@ import { useFrame } from '@react-three/fiber'
 import { useCursor } from '@react-three/drei'
 import { useStore } from '../store'
 import { chalkboardTexture } from '../lib/canvasTextures'
+import { lighting } from '../lib/timeOfDay'
 import { Box, Sphere } from './parts'
 
 const TEX_W = 512
@@ -17,7 +18,7 @@ const BOARD_Y = LEG + FACE_H / 2
 
 // Layout in texture pixels: [x, y, width, height]
 export const MENU_ITEMS = [
-  { id: 'projects', label: 'Projects', price: '4 dishes', rect: [40, 150, 432, 82] },
+  { id: 'projects', label: 'Projects', price: '6 dishes', rect: [40, 150, 432, 82] },
   { id: 'about', label: 'About Me', price: 'a cup', rect: [40, 236, 432, 82] },
   { id: 'contact', label: 'Contact', price: 'say hi', rect: [40, 322, 432, 82] },
   { id: 'blog', label: 'Blog', price: 'fresh ↗', rect: [40, 408, 432, 82], href: 'https://beyzatozman.netlify.app' },
@@ -86,6 +87,14 @@ function Frame({ children }) {
 // Wooden A-frame sandwich board with a dark chalkboard menu.
 export default function MenuBoard(props) {
   const tex = useMemo(() => chalkboardTexture(MENU_ITEMS, TEX_W, TEX_H), [])
+  // After dark the board is lit like a shop sign so the menu stays readable.
+  const face = useRef()
+  const lamp = useRef()
+  useFrame(() => {
+    const l = lighting()
+    face.current.emissiveIntensity = l.menuGlow
+    lamp.current.intensity = l.menuLamp
+  })
   // lean angle; z offset puts both post tops together at the hinge
   const lean = 0.2
   const z = Math.sin(lean) * POST_H
@@ -100,7 +109,7 @@ export default function MenuBoard(props) {
         <Frame>
           <mesh position={[0, 0, 0.016]}>
             <planeGeometry args={[FACE_W, FACE_H]} />
-            <meshStandardMaterial map={tex} roughness={0.95} />
+            <meshStandardMaterial ref={face} map={tex} emissiveMap={tex} emissive="#ffffff" emissiveIntensity={0} roughness={0.95} />
           </mesh>
           <group position={[0, 0, 0.018]}>
             {MENU_ITEMS.map((item) => (
@@ -108,6 +117,7 @@ export default function MenuBoard(props) {
             ))}
           </group>
         </Frame>
+        <pointLight ref={lamp} position={[0, BOARD_Y + 0.5, 0.9]} intensity={0} distance={3} decay={1.6} color="#ffcf8a" />
       </group>
     </group>
   )

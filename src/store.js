@@ -10,6 +10,14 @@ const viewFromHash = () => {
 // starting tilt) keeps the camera above the floor; zoom is a distance factor.
 export const ORBIT_LIMITS = { pitchMin: -0.75, pitchMax: 0.3, zoomMin: 0.25, zoomMax: 2 }
 const TAU = Math.PI * 2
+const SOUND_KEY = 'kissaten-sound'
+const savedSoundOn = () => {
+  try {
+    return localStorage.getItem(SOUND_KEY) !== 'off'
+  } catch {
+    return true
+  }
+}
 const clamp = (v, min, max) => Math.min(max, Math.max(min, v))
 
 export const useStore = create((set) => ({
@@ -18,6 +26,8 @@ export const useStore = create((set) => ({
   hoveredId: null,
   openProjectId: null,
   sceneReady: false,
+  // music and sound effects; remembered between visits
+  soundOn: savedSoundOn(),
   orbit: { yaw: 0, pitch: 0, zoom: 1 },
   // bumped on reset so any leftover drag momentum stops
   orbitResets: 0,
@@ -31,6 +41,13 @@ export const useStore = create((set) => ({
   openProject: (openProjectId) => set({ openProjectId }),
   closeProject: () => set({ openProjectId: null }),
   setSceneReady: () => set({ sceneReady: true }),
+  toggleSound: () =>
+    set(({ soundOn }) => {
+      try {
+        localStorage.setItem(SOUND_KEY, soundOn ? 'off' : 'on')
+      } catch {}
+      return { soundOn: !soundOn }
+    }),
   turn: (dYaw, dPitch = 0) =>
     set(({ orbit }) => ({
       orbit: {

@@ -71,6 +71,8 @@ button { font: inherit; cursor: pointer; }
   outline: none;
 }
 .topnav button[aria-current='page'] { background: var(--berry); color: var(--cream); }
+.topnav .sound-btn { display: inline-flex; align-items: center; padding: 6px 8px; }
+.topnav .sound-btn[aria-pressed='false'] { opacity: 0.6; }
 
 .hint {
   position: fixed;

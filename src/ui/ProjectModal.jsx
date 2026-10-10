@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { useStore } from '../store'
 import { projectById } from '../data/projects'
 
-const FOOD_EMOJI = { sandwich: '🥪', parfait: '🍨', pancakes: '🥞', soda: '🍈' }
+const FOOD_EMOJI = { sandwich: '🥪', parfait: '🍨', pancakes: '🥞', soda: '🍈', omurice: '🍳', naporitan: '🍝' }
 
 function Gallery({ project }) {
   const [index, setIndex] = useState(0)

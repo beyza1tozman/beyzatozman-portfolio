@@ -1,4 +1,7 @@
+import { useRef } from 'react'
+import { useFrame } from '@react-three/fiber'
 import { Box, Cyl, C, glassMat } from './parts'
+import { lighting } from '../lib/timeOfDay'
 import { BeanJar, CoffeeCup, CoffeeTin, GooseneckKettle, PourOver, Teapot } from './Tableware'
 
 function Stool({ position }) {
@@ -52,9 +55,15 @@ function BackCupboard() {
 }
 
 export default function Counter() {
+  const light = useRef()
+  useFrame(() => {
+    light.current.intensity = lighting().counter
+  })
   return (
     <group>
       <BackCupboard />
+      {/* warm light over the bar and the cupboard behind it */}
+      <pointLight ref={light} position={[2.9, 2.6, -2.6]} intensity={1.2} distance={4.5} decay={1.5} color="#ffd29a" />
       {/* bar counter */}
       <group position={[2.8, 0, -1.9]}>
         <Box size={[3.6, 1.0, 0.6]} position={[0, 0.5, 0]} color={C.wallRose} />

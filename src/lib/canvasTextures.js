@@ -5,6 +5,7 @@ const FONTS_READY =
     ? Promise.all([
         document.fonts.load('40px "Single Day"'),
         document.fonts.load('40px "Gaegu"'),
+        document.fonts.load('600 40px "Klee One"', 'いただきます'),
       ]).catch(() => {})
     : Promise.resolve()
 
@@ -197,6 +198,22 @@ export function projectCardTexture(project) {
     ctx.font = '30px "Gaegu"'
     ctx.textAlign = 'center'
     ctx.fillText('click to order', w / 2, h - 50)
+  })
+}
+
+// Little paper flag for a dish, with a word in red ink.
+export function flagTexture(text) {
+  return makeCanvasTexture(300, 100, (ctx, w, h) => {
+    ctx.fillStyle = '#fdfbf6'
+    ctx.fillRect(0, 0, w, h)
+    ctx.fillStyle = '#9e1119'
+    ctx.textAlign = 'center'
+    ctx.textBaseline = 'middle'
+    // as large as fits the flag
+    let size = 72
+    do ctx.font = `600 ${size--}px "Klee One", "Hiragino Mincho ProN", "Yu Mincho", serif`
+    while (ctx.measureText(text).width > w - 24 && size > 16)
+    ctx.fillText(text, w / 2, h / 2 + 3)
   })
 }
 

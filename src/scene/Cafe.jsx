@@ -3,6 +3,7 @@ import * as THREE from 'three'
 import { useFrame } from '@react-three/fiber'
 import { Box, Cyl, Sphere, C, glassMat } from './parts'
 import { clockFaceTexture, floorTexture, kissatenPaintingTexture } from '../lib/canvasTextures'
+import { lighting } from '../lib/timeOfDay'
 
 // Room footprint: x -5..5, z -4..4. Back wall at z=-4, left wall at x=-5.
 // A sidewalk strip in front (z 4..6.4) holds the menu board.
@@ -79,11 +80,16 @@ function Ground() {
   )
 }
 
+// Glowing materials that follow the time of day, shared by every window and lamp.
+const windowGlass = new THREE.MeshStandardMaterial({ color: '#fff6dc', roughness: 0.75, emissive: '#ffe9b0', emissiveIntensity: 0.9 })
+const lampShade = new THREE.MeshStandardMaterial({ color: '#e6a23c', roughness: 0.7, emissive: '#d9822b', emissiveIntensity: 0.6, side: 2 })
+const lampBulb = new THREE.MeshStandardMaterial({ color: '#fff3d0', roughness: 0.6, emissive: '#ffe2a0', emissiveIntensity: 2 })
+
 function Window({ position }) {
   return (
     <group position={position}>
       <Box size={[2.2, 1.6, 0.12]} color={C.woodDark} />
-      <Box size={[2.0, 1.4, 0.05]} position={[0, 0, 0.05]} color="#fff6dc" mat={{ emissive: '#ffe9b0', emissiveIntensity: 0.9 }} />
+      <Box size={[2.0, 1.4, 0.05]} position={[0, 0, 0.05]} material={windowGlass} />
       <Box size={[0.06, 1.4, 0.08]} position={[0, 0, 0.08]} color={C.woodDark} />
       <Box size={[2.0, 0.06, 0.08]} position={[0, 0.2, 0.08]} color={C.woodDark} />
       {/* curtains */}
@@ -144,14 +150,20 @@ function Clock({ position }) {
 
 function PendantLamp({ position }) {
   const [x, y, z] = position
+  const light = useRef()
+  useFrame(() => {
+    const l = lighting()
+    light.current.intensity = l.lamp
+    light.current.color.copy(l.lampColor)
+  })
   return (
     <group position={[x, 0, z]}>
       <Cyl args={[0.01, 0.01, 4 - y, 6]} position={[0, (4 + y) / 2, 0]} color="#222" />
       {/* stained-glass shade */}
-      <Cyl args={[0.08, 0.42, 0.34, 8, 1, true]} position={[0, y, 0]} color="#e6a23c" mat={{ emissive: '#d9822b', emissiveIntensity: 0.6, side: 2 }} />
+      <Cyl args={[0.08, 0.42, 0.34, 8, 1, true]} position={[0, y, 0]} material={lampShade} />
       <Cyl args={[0.08, 0.08, 0.06, 8]} position={[0, y + 0.2, 0]} color="#3d2a1c" />
-      <Sphere r={0.1} position={[0, y - 0.12, 0]} color="#fff3d0" mat={{ emissive: '#ffe2a0', emissiveIntensity: 2 }} />
-      <pointLight position={[0, y - 0.3, 0]} intensity={4} distance={4.5} decay={1.6} color="#ffcf8a" />
+      <Sphere r={0.1} position={[0, y - 0.12, 0]} material={lampBulb} />
+      <pointLight ref={light} position={[0, y - 0.3, 0]} intensity={4} distance={5.5} decay={1.6} color="#ffcf8a" />
     </group>
   )
 }
@@ -172,6 +184,14 @@ function Poster({ position, rotation }) {
 }
 
 export default function Cafe() {
+  useFrame(() => {
+    const l = lighting()
+    windowGlass.color.copy(l.windowColor)
+    windowGlass.emissive.copy(l.windowColor)
+    windowGlass.emissiveIntensity = l.windowGlow
+    lampShade.emissiveIntensity = 0.6 * l.lampGlow
+    lampBulb.emissiveIntensity = 2 * l.lampGlow
+  })
   return (
     <group>
       <Ground />

@@ -4,14 +4,20 @@ import { useCursor } from '@react-three/drei'
 import { useStore, prefersReducedMotion } from '../store'
 import { projectCardTexture, priceTagTexture } from '../lib/canvasTextures'
 import { FOOD_COMPONENTS } from './foods/Foods'
+import { lighting } from '../lib/timeOfDay'
 
 const CARD_W = 0.62
 const CARD_H = 0.72
+const CARD_Z = -0.27 // card sits behind the food
+// The flip swings the card's corners round in a circle; the price tag stands
+// just outside it so they never pass through each other.
+const TAG_Z = 0.44
 
 // A fake-food sample that flips like a card on hover, revealing a cardboard
 // summary card on its back. Local front is +z.
 export default function FoodItem({ project, position }) {
   const flip = useRef()
+  const cardFace = useRef()
   const view = useStore((s) => s.view)
   const flipped = useStore((s) => s.hoveredId === project.id)
   const active = view === 'projects'
@@ -23,6 +29,8 @@ export default function FoodItem({ project, position }) {
 
   useFrame((state, dt) => {
     if (!flip.current) return
+    // a soft glow keeps the card readable however dim the room is
+    cardFace.current.emissiveIntensity = lighting().cardGlow
     const target = flipped ? Math.PI : 0
     const k = prefersReducedMotion ? 1 : 1 - Math.exp(-dt * 7)
     flip.current.rotation.y += (target - flip.current.rotation.y) * k
@@ -65,19 +73,19 @@ export default function FoodItem({ project, position }) {
           <Food />
         </group>
         {/* cardboard summary on the back */}
-        <mesh position={[0, CARD_H / 2, -0.29]} rotation-y={Math.PI} castShadow>
+        <mesh position={[0, CARD_H / 2, CARD_Z]} rotation-y={Math.PI} castShadow>
           <boxGeometry args={[CARD_W, CARD_H, 0.015]} />
           <meshStandardMaterial attach="material-0" color="#b8915e" />
           <meshStandardMaterial attach="material-1" color="#b8915e" />
           <meshStandardMaterial attach="material-2" color="#b8915e" />
           <meshStandardMaterial attach="material-3" color="#b8915e" />
-          <meshStandardMaterial attach="material-4" map={cardTex} roughness={0.9} />
+          <meshStandardMaterial ref={cardFace} attach="material-4" map={cardTex} emissiveMap={cardTex} emissive="#ffffff" emissiveIntensity={0.2} roughness={0.9} />
           <meshStandardMaterial attach="material-5" color="#c9a26f" roughness={0.9} />
         </mesh>
       </group>
 
       {/* price tag on the shelf edge */}
-      <mesh position={[0, 0.05, 0.36]} rotation-x={-0.35}>
+      <mesh position={[0, 0.05, TAG_Z]} rotation-x={-0.15}>
         <planeGeometry args={[0.36, 0.135]} />
         <meshStandardMaterial map={tagTex} roughness={0.9} />
       </mesh>

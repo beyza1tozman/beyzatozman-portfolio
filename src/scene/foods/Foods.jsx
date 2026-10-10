@@ -1,4 +1,6 @@
+import { useMemo } from 'react'
 import { Box, Cyl, Sphere, glassMat } from '../parts'
+import { flagTexture } from '../../lib/canvasTextures'
 
 // Each food sits on y=0 and fits roughly inside a 0.5 x 0.5 x 0.5 box.
 
@@ -125,9 +127,132 @@ export function CreamSoda() {
   )
 }
 
+// Half sphere sitting on its flat side; scale stretches it into mounds.
+function Dome({ r, color, scale, position, roughness = 0.6 }) {
+  return (
+    <mesh position={position} scale={scale} castShadow receiveShadow>
+      <sphereGeometry args={[r, 32, 12, 0, Math.PI * 2, 0, Math.PI / 2]} />
+      <meshStandardMaterial color={color} roughness={roughness} />
+    </mesh>
+  )
+}
+
+function Ring({ r, tube, color, position, rotation }) {
+  return (
+    <mesh position={position} rotation={rotation} castShadow>
+      <torusGeometry args={[r, tube, 6, 18]} />
+      <meshStandardMaterial color={color} roughness={0.6} />
+    </mesh>
+  )
+}
+
+const PLATE_TOP = 0.032
+
+// Paper flag on a toothpick; the word reads correctly from both sides.
+function Flag({ text, position }) {
+  const tex = useMemo(() => flagTexture(text), [text])
+  return (
+    <group position={position} rotation-z={-0.12}>
+      <Cyl args={[0.004, 0.004, 0.2, 5]} position={[0, 0.1, 0]} color="#e2c49a" />
+      <mesh position={[0.082, 0.168, 0]} castShadow>
+        <boxGeometry args={[0.162, 0.054, 0.003]} />
+        <meshStandardMaterial attach="material-0" color="#fdfbf6" />
+        <meshStandardMaterial attach="material-1" color="#fdfbf6" />
+        <meshStandardMaterial attach="material-2" color="#fdfbf6" />
+        <meshStandardMaterial attach="material-3" color="#fdfbf6" />
+        <meshStandardMaterial attach="material-4" map={tex} roughness={0.9} />
+        <meshStandardMaterial attach="material-5" map={tex} roughness={0.9} />
+      </mesh>
+    </group>
+  )
+}
+
+// Steel fork, tines pointing along -z.
+function Fork(props) {
+  // only lightly metallic: the scene has no reflections, so real chrome reads as black
+  const steel = { metalness: 0.35, roughness: 0.3 }
+  return (
+    <group {...props}>
+      <Box size={[0.018, 0.005, 0.13]} position={[0, 0, 0.05]} color="#e6e4df" mat={steel} />
+      <Box size={[0.012, 0.005, 0.03]} position={[0, 0, -0.03]} color="#e6e4df" mat={steel} />
+      <Box size={[0.032, 0.005, 0.02]} position={[0, 0, -0.055]} color="#e6e4df" mat={steel} />
+      {[-0.0135, -0.0045, 0.0045, 0.0135].map((x) => (
+        <Box key={x} size={[0.005, 0.005, 0.045]} position={[x, 0, -0.0875]} color="#e6e4df" mat={steel} />
+      ))}
+    </group>
+  )
+}
+
+export function Omurice() {
+  // omelette: an egg-yellow dome, long along x
+  const [rx, ry, rz] = [0.17, 0.085, 0.105]
+  // angle from the top of the omelette, and the blob's [width, thickness, length]
+  const ketchup = [
+    { a: 0.1, size: [0.062, 0.022, 0.07] },
+    { a: 0.75, size: [0.058, 0.02, 0.05] },
+    { a: 1.25, size: [0.068, 0.02, 0.045] },
+  ]
+  return (
+    <group>
+      <Plate r={0.22} />
+      <Dome r={1} scale={[rx, ry, rz]} position={[0, PLATE_TOP, 0]} color="#f5c94e" roughness={0.5} />
+      {/* ketchup: rounded blobs lying on the curve, over the top and down the front */}
+      {ketchup.map(({ a, size }, i) => (
+        <Sphere key={i} r={1} scale={size} position={[0.01, PLATE_TOP + ry * Math.cos(a), rz * Math.sin(a)]} rotation-x={a} color="#c4231b" mat={{ roughness: 0.2 }} />
+      ))}
+      {/* a little pool where it reaches the plate */}
+      <Sphere r={1} scale={[0.075, 0.012, 0.04]} position={[0.01, PLATE_TOP + 0.004, rz + 0.012]} color="#c4231b" mat={{ roughness: 0.2 }} />
+      {/* parsley at one end */}
+      {[[-0.19, 0.055, 0.02], [-0.2, 0.06, -0.03], [-0.17, 0.075, -0.005]].map((pos, i) => (
+        <Sphere key={i} r={0.032} segments={10} position={pos} color={i === 2 ? '#4f9a3a' : '#3f8530'} />
+      ))}
+      {/* "itadakimasu", what you say before eating */}
+      <Flag text="いただきます" position={[0.05, 0.07, -0.02]} />
+    </group>
+  )
+}
+
+export function Naporitan() {
+  // where a topping lands on the spaghetti mound at (x, z)
+  const [mr, mh] = [0.165, 0.09]
+  const onTop = (x, z, lift = 0) => [x, PLATE_TOP + mh * Math.sqrt(Math.max(0, 1 - (x * x + z * z) / (mr * mr))) + lift, z]
+  const strands = [
+    [0.02, 0.03, 0.3], [-0.06, -0.02, 1.2], [0.07, -0.06, 2.1], [-0.04, 0.08, 0.8],
+    [0.09, 0.06, 1.7], [-0.1, -0.07, 2.6], [0.0, -0.1, 0.4], [-0.11, 0.03, 1.5],
+  ]
+  return (
+    <group>
+      {/* steel oval plate */}
+      <Cyl args={[0.23, 0.2, 0.025, 32]} scale={[1.1, 1, 0.92]} position={[0, 0.0125, 0]} color="#bfbcb6" mat={{ metalness: 0.6, roughness: 0.35 }} />
+      <Dome r={1} scale={[mr, mh, mr]} position={[0, PLATE_TOP, 0]} color="#e2702e" />
+      {/* loose spaghetti loops */}
+      {strands.map(([x, z, rot], i) => (
+        <Ring key={i} r={0.045} tube={0.007} color={i % 2 ? '#f08d3e' : '#e9803a'} position={onTop(x, z, -0.006)} rotation={[Math.PI / 2 - 0.3, 0, rot]} />
+      ))}
+      {/* sausage slices */}
+      {[[0.05, -0.02], [-0.07, 0.05], [0.02, 0.09], [-0.03, -0.08], [0.11, 0.04]].map(([x, z], i) => (
+        <Cyl key={i} args={[0.022, 0.022, 0.012, 14]} position={onTop(x, z, 0.004)} rotation={[0.4, i, 0.3]} color="#c9493a" />
+      ))}
+      {/* green pepper and onion */}
+      {[[-0.02, 0.04], [0.08, -0.07], [-0.1, -0.02]].map(([x, z], i) => (
+        <Ring key={i} r={0.022} tube={0.006} color="#4c9a3c" position={onTop(x, z, 0.004)} rotation={[Math.PI / 2 - 0.2, 0, i]} />
+      ))}
+      {[[0.04, 0.06], [-0.05, -0.05]].map(([x, z], i) => (
+        <Ring key={i} r={0.03} tube={0.005} color="#f4e7cc" position={onTop(x, z, 0.002)} rotation={[Math.PI / 2 - 0.25, 0, i * 2]} />
+      ))}
+      {/* fork stuck into the spaghetti, handle tilted up towards the viewer */}
+      <group position={[0.06, 0.17, 0.0]} rotation-y={-0.6}>
+        <Fork rotation-x={-1.05} />
+      </group>
+    </group>
+  )
+}
+
 export const FOOD_COMPONENTS = {
   sandwich: Sandwich,
   parfait: Parfait,
   pancakes: Pancakes,
   soda: CreamSoda,
+  omurice: Omurice,
+  naporitan: Naporitan,
 }

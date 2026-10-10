@@ -7,6 +7,7 @@ import Props from './Props'
 import Cabinet from './Cabinet'
 import MenuBoard from './MenuBoard'
 import CameraRig from './CameraRig'
+import Lights from './Lights'
 
 export default function Scene() {
   return (
@@ -20,21 +21,7 @@ export default function Scene() {
       <color attach="background" args={['#1c1715']} />
       <fog attach="fog" args={['#1c1715', 28, 48]} />
 
-      <hemisphereLight args={['#fff1dc', '#3a2620', 0.9]} />
-      <ambientLight intensity={0.25} color="#ffe8cc" />
-      <directionalLight
-        position={[7, 11, 6]}
-        intensity={1.7}
-        color="#fff0d8"
-        castShadow
-        shadow-mapSize={[1024, 1024]}
-        shadow-bias={-0.0004}
-        shadow-normalBias={0.04}
-        shadow-camera-left={-9}
-        shadow-camera-right={9}
-        shadow-camera-top={9}
-        shadow-camera-bottom={-9}
-      />
+      <Lights />
 
       <Cafe />
       <Counter />

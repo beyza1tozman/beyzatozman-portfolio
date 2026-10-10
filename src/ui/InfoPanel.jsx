@@ -6,6 +6,7 @@ export const CONTACT = {
   email: 'tozmanbeyza@gmail.com',
   linkedin: 'https://www.linkedin.com/in/beyzatozman1/',
   github: 'https://github.com/beyza1tozman',
+  openprocessing: 'https://openprocessing.org/@u482461#sketches',
   blog: 'https://beyzatozman.netlify.app',
 }
 
@@ -61,6 +62,9 @@ function Contact() {
         </a>
         <a className="chunky" href={CONTACT.github} target="_blank" rel="noopener noreferrer">
           GitHub
+        </a>
+        <a className="chunky" href={CONTACT.openprocessing} target="_blank" rel="noopener noreferrer">
+          OpenProcessing
         </a>
       </div>
     </>
