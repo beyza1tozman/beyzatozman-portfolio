@@ -1,5 +1,7 @@
 # Beyza Tozman Portfolio
 
+**Live:** https://beyzatozman-portfolio.netlify.app/
+
 My portfolio as a little 3D retro Japanese coffee shop (kissaten). Pick something from the chalkboard menu; each fake-food sample in the display cabinet is one of my projects.
 
 Built with React, React Three Fiber and Vite. The whole cafe is modelled in code from simple shapes.
