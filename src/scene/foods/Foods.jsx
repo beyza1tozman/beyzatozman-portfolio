@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import * as THREE from 'three'
 import { Box, Cyl, Sphere, glassMat } from '../parts'
 import { flagTexture } from '../../lib/canvasTextures'
 
@@ -186,22 +187,32 @@ function Fork(props) {
 export function Omurice() {
   // omelette: an egg-yellow dome, long along x
   const [rx, ry, rz] = [0.17, 0.085, 0.105]
-  // angle from the top of the omelette, and the blob's [width, thickness, length]
-  const ketchup = [
-    { a: 0.1, size: [0.062, 0.022, 0.07] },
-    { a: 0.75, size: [0.058, 0.02, 0.05] },
-    { a: 1.25, size: [0.068, 0.02, 0.045] },
-  ]
+  // ketchup: one squiggly line zigzagging along the omelette, hugging its surface
+  const tube = 0.0085
+  const ketchup = useMemo(() => {
+    const pts = []
+    for (let i = 0; i <= 160; i++) {
+      const x = -0.135 + (0.27 * i) / 160
+      const edge = Math.sqrt(1 - (x / rx) ** 2)
+      const z = rz * 0.7 * edge * Math.sin((x / 0.27) * Math.PI * 9 + Math.PI / 2)
+      const y = PLATE_TOP + ry * Math.sqrt(Math.max(0, 1 - (x / rx) ** 2 - (z / rz) ** 2))
+      pts.push(new THREE.Vector3(x, y + tube * 0.4, z))
+    }
+    return new THREE.CatmullRomCurve3(pts)
+  }, [rx, ry, rz])
+  const ketchupMat = { color: '#c4231b', roughness: 0.2 }
   return (
     <group>
       <Plate r={0.22} />
       <Dome r={1} scale={[rx, ry, rz]} position={[0, PLATE_TOP, 0]} color="#f5c94e" roughness={0.5} />
-      {/* ketchup: rounded blobs lying on the curve, over the top and down the front */}
-      {ketchup.map(({ a, size }, i) => (
-        <Sphere key={i} r={1} scale={size} position={[0.01, PLATE_TOP + ry * Math.cos(a), rz * Math.sin(a)]} rotation-x={a} color="#c4231b" mat={{ roughness: 0.2 }} />
+      <mesh castShadow>
+        <tubeGeometry args={[ketchup, 320, tube, 8, false]} />
+        <meshStandardMaterial {...ketchupMat} />
+      </mesh>
+      {/* rounded ends of the line */}
+      {[0, 1].map((t) => (
+        <Sphere key={t} r={tube} segments={8} position={ketchup.getPoint(t).toArray()} color={ketchupMat.color} mat={{ roughness: 0.2 }} />
       ))}
-      {/* a little pool where it reaches the plate */}
-      <Sphere r={1} scale={[0.075, 0.012, 0.04]} position={[0.01, PLATE_TOP + 0.004, rz + 0.012]} color="#c4231b" mat={{ roughness: 0.2 }} />
       {/* parsley at one end */}
       {[[-0.19, 0.055, 0.02], [-0.2, 0.06, -0.03], [-0.17, 0.075, -0.005]].map((pos, i) => (
         <Sphere key={i} r={0.032} segments={10} position={pos} color={i === 2 ? '#4f9a3a' : '#3f8530'} />
